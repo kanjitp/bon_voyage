@@ -1,16 +1,27 @@
+import 'package:bon_voyage/widgets/BonVoyageMap.dart';
 import 'package:flutter/material.dart';
 
-import './logics/user.dart';
-import './widgets/profilepage/headbar.dart';
-import './widgets/profilepage/personalmap.dart';
-import './widgets/profilepage/profilepic.dart';
-import './widgets/profilepage/username.dart';
-import './widgets/profilepage/userstat.dart';
+import '../models/user.dart';
+import '../widgets/profilepage/headbar.dart';
+import '../widgets/profilepage/profilepic.dart';
+import '../widgets/profilepage/username.dart';
+import '../widgets/profilepage/userstat.dart';
 
-class ProfilePage extends StatefulWidget {
-  final User user;
+class ProfileScreen extends StatefulWidget {
+  static const routeName = '/profile';
 
-  ProfilePage(this.user);
+  final User user = User(
+      'benwalk',
+      'Benjamin',
+      'Walker',
+      'The important thing is not the destination but the journey',
+      [],
+      [],
+      [],
+      DateTime.now(),
+      true,
+      double.infinity,
+      null);
 
   @override
   _ProfilePageState createState() {
@@ -18,14 +29,14 @@ class ProfilePage extends StatefulWidget {
   }
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = PreferredSize(
       preferredSize: Size.fromHeight(mediaQuery.size.height * 0.075),
-      child: HeadBar(),
+      child: HeadBar(context),
     );
 
     final upperHeight = (mediaQuery.size.height -
@@ -137,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ))
                     ])),
-            Container(height: mapHeight, child: PersonalMap()),
+            Container(height: mapHeight, child: BonVoyageMap()),
           ],
         )),
       ),

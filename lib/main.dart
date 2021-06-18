@@ -1,9 +1,12 @@
 import 'dart:io';
 
-import './logics/user.dart';
 import 'package:flutter/services.dart';
-import 'package:bon_voyage/profilepage.dart';
 import 'package:flutter/material.dart';
+
+import './screens/chat_screen.dart';
+import './screens/main_screen.dart';
+import './screens/pin_screen.dart';
+import './screens/profile_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,30 +16,26 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // dummy test
-  final User testSubject = User(
-      'benwalk',
-      'Benjamin',
-      'Walker',
-      'The important thing is not the destination but the journey',
-      [],
-      [],
-      [],
-      DateTime.now(),
-      true,
-      double.infinity,
-      null);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bon Voyage',
-      home: ProfilePage(testSubject),
+      debugShowCheckedModeBanner: false,
+      home: MainScreen(),
       theme: ThemeData(
-          primaryColor: Color.fromARGB(0xFF, 0xF7, 0xCA, 0x56),
-          cursorColor: Colors.black,
-          textTheme:
-              ThemeData.light().textTheme.copyWith(headline1: TextStyle())),
+        primaryColor: Color.fromARGB(0xFF, 0xF7, 0xCA, 0x56),
+        accentColor: Color.fromARGB(0xFF, 0x00, 0x3C, 0x76),
+        cursorColor: Colors.black,
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline1: TextStyle(),
+            ),
+      ),
+      routes: {
+        MainScreen.routeName: (ctx) => MainScreen(),
+        ProfileScreen.routeName: (ctx) => ProfileScreen(),
+        ChatScreen.routeName: (ctx) => ChatScreen(),
+        PinScreen.routeName: (ctx) => PinScreen()
+      },
     );
   }
 }
