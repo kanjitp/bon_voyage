@@ -61,7 +61,24 @@ class ProfileIcon extends StatelessWidget {
       child: InkWell(
         splashColor: Theme.of(context).primaryColor,
         onTap: () {
-          Navigator.of(context).pushReplacementNamed(ProfileScreen.routeName);
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0), end: Offset.zero)
+                      .animate(animation),
+                  child: child,
+                );
+              },
+              pageBuilder: (context, animation, animationTime) {
+                return ProfileScreen();
+              },
+              transitionDuration: Duration(milliseconds: 200),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(20),
         child: Icon(
@@ -90,7 +107,24 @@ class ChatIcon extends StatelessWidget {
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
         onTap: () {
-          Navigator.of(context).pushReplacementNamed(ChatScreen.routeName);
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0), end: Offset.zero)
+                      .animate(animation),
+                  child: child,
+                );
+              },
+              pageBuilder: (context, animation, animationTime) {
+                return ChatScreen();
+              },
+              transitionDuration: Duration(milliseconds: 200),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(20),
         child: Icon(
@@ -119,7 +153,24 @@ class PinIcon extends StatelessWidget {
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
         onTap: () {
-          Navigator.of(context).pushReplacementNamed(PinScreen.routeName);
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0), end: Offset.zero)
+                      .animate(animation),
+                  child: child,
+                );
+              },
+              pageBuilder: (context, animation, animationTime) {
+                return PinScreen();
+              },
+              transitionDuration: Duration(milliseconds: 200),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(20),
         child: Icon(

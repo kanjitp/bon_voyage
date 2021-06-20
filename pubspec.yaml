@@ -34,6 +34,8 @@ dependencies:
   intl: ^0.15.8
   http: ^0.13.3
   shared_preferences: ^2.0.6
+  control_pad: ^1.1.1+1
+  geolocator: ^7.1.0
 
 dev_dependencies:
   flutter_test:
@@ -52,7 +54,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/BenjaminWalker.png
-  #   - images/a_dot_ham.jpeg
+    - assets/images/user_pin.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

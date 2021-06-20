@@ -1,4 +1,5 @@
-import 'location.dart';
+import 'package:geolocator/geolocator.dart';
+
 import 'post.dart';
 
 class User {
@@ -12,7 +13,7 @@ class User {
   DateTime dateOfBirth;
   bool isVisible;
   double maxDistanceVisible;
-  Location currentLocation;
+  Position currentLocation;
 
   User(
       this.userName,
@@ -27,7 +28,7 @@ class User {
       this.maxDistanceVisible,
       this.currentLocation);
 
-  void setLocation(Location loc) {
+  void setLocation(Position loc) {
     currentLocation = loc;
   }
 }
