@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:control_pad/control_pad.dart';
+import 'package:control_pad/models/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,8 +11,10 @@ import 'package:provider/provider.dart';
 
 import '../providers/mapController.dart';
 import '../providers/user_location.dart';
+import '../providers/tilt_level.dart';
 import './googlemap/currentUserLocBtn.dart';
 import './googlemap/tiltBtn.dart';
+import './googlemap/maneuverBtn.dart';
 
 class BonVoyageMap extends StatefulWidget {
   @override
@@ -23,8 +27,6 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
   double postRadius = 90;
 
   GoogleMapController _googleMapController;
-
-  double currentTiltLevel = 0;
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
   }
 
   void updateMarkerAndCircle(Position newLocationData, Uint8List imageData) {
-    print('updateMarkerAndcircle: Called');
+    // print('updateMarkerAndcircle: Called');
     LatLng latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
 
     setState(() {
@@ -97,7 +99,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(userLocation.latitude, userLocation.longitude),
-            tilt: currentTiltLevel,
+            tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
             zoom: await _googleMapController.getZoomLevel(),
             bearing: userLocation.heading,
           ),
@@ -113,7 +115,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
             CameraPosition(
               target:
                   LatLng(newLocationData.latitude, newLocationData.longitude),
-              tilt: currentTiltLevel,
+              tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
               zoom: await _googleMapController.getZoomLevel(),
               bearing: newLocationData.heading,
             ),
@@ -128,6 +130,9 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
     }
   }
 
+  PadButtonPressedCallback padButtonPressedCallback(
+      int buttonIndex, Gestures gesture) {}
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -141,6 +146,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
       body: Stack(children: <Widget>[
         GoogleMap(
           mapType: MapType.normal,
+          compassEnabled: true,
           myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           initialCameraPosition: CameraPosition(
@@ -148,7 +154,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
                 ? LatLng(1.296377, 103.776430)
                 : LatLng(initialUserLocation.latitude,
                     initialUserLocation.longitude),
-            tilt: currentTiltLevel,
+            tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
             zoom: 18,
             bearing:
                 initialUserLocation == null ? 0 : initialUserLocation.heading,
@@ -164,6 +170,14 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
           },
         ),
         Align(alignment: Alignment.bottomLeft, child: TiltButton()),
+        Positioned(
+          top: mediaQuery.size.height * 4 / 5,
+          left: mediaQuery.size.width / 3,
+          child: ManeuverButton(
+            size: mediaQuery.size.width / 3,
+            onDirectionChange: () {},
+          ),
+        ),
         Align(
             alignment: Alignment.bottomRight,
             child: CurrentUserLocationButton(getCurrentLocation)),

@@ -1,14 +1,43 @@
-import 'package:bon_voyage/screens/main_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-class ChatScreen extends StatelessWidget {
+import '../widgets/chat/new_message.dart';
+
+import '../widgets/chat/messages.dart';
+
+import '../screens/main_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class ChatScreen extends StatefulWidget {
   static final routeName = '/chat';
+
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  @override
+  void initState() {
+    final fbm = FirebaseMessaging.instance;
+    fbm.requestPermission();
+    FirebaseMessaging.onMessage.listen((message) {
+      print(message);
+      return;
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print(message);
+      return;
+    });
+    fbm.subscribeToTopic('chat');
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Screen'),
+        title: Text('Chats'),
         leading: BackButton(
           onPressed: () {
             Navigator.pushReplacement(
@@ -32,6 +61,21 @@ class ChatScreen extends StatelessWidget {
           },
         ),
         actions: <Widget>[],
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Messages(),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey))),
+              margin: EdgeInsets.only(bottom: 20),
+              child: NewMessage(),
+            ),
+          ],
+        ),
       ),
     );
   }

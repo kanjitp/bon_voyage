@@ -1,5 +1,8 @@
+import 'package:bon_voyage/providers/user.dart';
+import 'package:bon_voyage/screens/edit_profile_screen.dart';
 import 'package:bon_voyage/widgets/BonVoyageMap.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/user.dart';
 import '../widgets/profilepage/headbar.dart';
@@ -33,6 +36,7 @@ class _ProfilePageState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final userProvider = Provider.of<CurrentUser>(context, listen: false);
 
     final appBar = PreferredSize(
       preferredSize: Size.fromHeight(mediaQuery.size.height * 0.075),
@@ -85,7 +89,38 @@ class _ProfilePageState extends State<ProfileScreen> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            PageRouteBuilder(
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                var begin = Offset(0.0, 1.0);
+                                                var end = Offset.zero;
+                                                var curve = Curves.ease;
+
+                                                var tween = Tween(
+                                                        begin: begin, end: end)
+                                                    .chain(CurveTween(
+                                                        curve: curve));
+
+                                                return SlideTransition(
+                                                  position:
+                                                      animation.drive(tween),
+                                                  child: child,
+                                                );
+                                              },
+                                              pageBuilder: (context, animation,
+                                                  animationTime) {
+                                                return EditProfileScreen();
+                                              },
+                                              transitionDuration:
+                                                  Duration(milliseconds: 200),
+                                            ),
+                                          );
+                                        },
                                       ))
                                 ],
                               )),
@@ -94,9 +129,8 @@ class _ProfilePageState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Username(
-                                    firstname: widget.user.firstName,
-                                    lastname: widget.user.lastName,
-                                    username: widget.user.userName,
+                                    name: userProvider.name,
+                                    username: userProvider.username,
                                   ),
                                   UserStat(
                                     memNum: widget.user.memories.length,

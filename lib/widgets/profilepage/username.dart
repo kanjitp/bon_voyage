@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Username extends StatelessWidget {
-  final String firstname;
-  final String lastname;
+  final String name;
   final String username;
 
   Username({
-    @required this.firstname,
-    @required this.lastname,
+    @required this.name,
     @required this.username,
   });
 
@@ -19,7 +17,7 @@ class Username extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            firstname + ' ' + lastname,
+            name,
             style: TextStyle(
               color: Color(0xFF282728),
               fontWeight: FontWeight.w800,
