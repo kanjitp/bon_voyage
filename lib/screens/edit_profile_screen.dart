@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:bon_voyage/providers/user.dart';
-import 'package:bon_voyage/screens/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/edit_profile/user_image_picker.dart';
+import './profile_screen.dart';
+import '../providers/current_user.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static final routeName = '/edit-profile';
@@ -37,8 +37,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (_isInit) {
       final _userData = Provider.of<CurrentUser>(context, listen: false);
       _initValues = {
-        'username': _userData.username,
-        'name': _userData.name,
+        'username': _userData.user.username,
+        'name': _userData.user.name,
       };
     }
     super.didChangeDependencies();
@@ -114,6 +114,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'name': _initValues['name'],
         'imageUrl':
             _userImageURL == null ? userData['imageUrl'] : _userImageURL,
+        'chats': userData['chats'],
       },
     );
     print('updateCloudFirestore - updated');

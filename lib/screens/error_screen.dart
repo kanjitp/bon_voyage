@@ -5,8 +5,13 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Oops! Something went wrong!'),
+    return MaterialApp(
+      title: 'Error',
+      home: Scaffold(
+        body: Container(
+          child: Text('Oops! Something went wrong!'),
+        ),
+      ),
     );
   }
 }

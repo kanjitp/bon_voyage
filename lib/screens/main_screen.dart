@@ -1,14 +1,15 @@
-import 'package:bon_voyage/providers/user.dart';
-import 'package:bon_voyage/screens/setting_screen.dart';
+import 'package:bon_voyage_a_new_experience/providers/chats.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './chat_screen.dart';
+import './chatroom_screen.dart';
 import './pin_screen.dart';
+import './setting_screen.dart';
 import './profile_screen.dart';
 import '../widgets/bonVoyageMap.dart';
+import '../providers/current_user.dart';
 
 class MainScreen extends StatefulWidget {
   static final routeName = '/main';
@@ -137,25 +138,30 @@ class ChatIcon extends StatelessWidget {
       ),
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
-        onTap: () {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0), end: Offset.zero)
-                      .animate(animation),
-                  child: child,
-                );
-              },
-              pageBuilder: (context, animation, animationTime) {
-                return ChatScreen();
-              },
-              transitionDuration: Duration(milliseconds: 200),
-            ),
-          );
+        onTap: () async {
+          await Provider.of<Chats>(context, listen: false).fetchChats();
+          final chats = Provider.of<Chats>(context, listen: false).chats;
+          Future.delayed(
+              Duration(milliseconds: 190),
+              () => Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                                  begin: const Offset(1.0, 0.0),
+                                  end: Offset.zero)
+                              .animate(animation),
+                          child: child,
+                        );
+                      },
+                      pageBuilder: (context, animation, animationTime) {
+                        return ChatRoomScreen(chats);
+                      },
+                      transitionDuration: Duration(milliseconds: 200),
+                    ),
+                  ));
         },
         borderRadius: BorderRadius.circular(20),
         child: Icon(

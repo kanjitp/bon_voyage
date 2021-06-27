@@ -1,3 +1,4 @@
+import 'package:bon_voyage_a_new_experience/models/chat.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../widgets/chat/new_message.dart';
@@ -9,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
-  static final routeName = '/chat';
+  final Chat chat;
+
+  ChatScreen(this.chat);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -35,44 +38,42 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chats'),
-        leading: BackButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                            begin: const Offset(-1.0, 0.0), end: Offset.zero)
-                        .animate(animation),
-                    child: child,
-                  );
-                },
-                pageBuilder: (context, animation, animationTime) {
-                  return MainScreen();
-                },
-                transitionDuration: Duration(milliseconds: 200),
-              ),
-            );
-          },
+        title: Row(
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.chat.image),
+            ),
+            SizedBox(
+              width: mediaQuery.size.width * 0.02,
+            ),
+            Column(
+              children: <Widget>[
+                Text(
+                  widget.chat.name,
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  "Active 3m ago",
+                  style: TextStyle(fontSize: 12),
+                )
+              ],
+            )
+          ],
         ),
-        actions: <Widget>[],
       ),
       body: Container(
         child: Column(
           children: <Widget>[
             Expanded(
-              child: Messages(),
+              child: Messages(chat: widget.chat),
             ),
             Container(
               decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: Colors.grey))),
-              margin: EdgeInsets.only(bottom: 20),
-              child: NewMessage(),
+              child: NewMessage(chat: widget.chat),
             ),
           ],
         ),

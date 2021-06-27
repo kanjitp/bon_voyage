@@ -1,8 +1,9 @@
-import 'package:bon_voyage/providers/mapController.dart';
-import 'package:bon_voyage/providers/tilt_level.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../providers/mapController.dart';
+import '../../providers/tilt_level.dart';
 
 class TiltButton extends StatefulWidget {
   @override

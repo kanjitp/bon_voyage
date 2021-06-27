@@ -1,7 +1,8 @@
-import 'package:bon_voyage/screens/auth_screen.dart';
-import 'package:bon_voyage/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../screens/auth_screen.dart';
+import './main_screen.dart';
 
 class SettingScreen extends StatelessWidget {
   @override
@@ -94,9 +95,6 @@ class SettingScreen extends StatelessWidget {
               ),
             ),
             Divider(),
-            Card(
-              child: Text('text'),
-            )
           ],
         ),
       ),

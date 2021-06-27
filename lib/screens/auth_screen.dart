@@ -32,6 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
       });
       if (isSignUp) {
         // in sign up mode
+        print('_submitForm - sign up');
         userCredential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         await FirebaseFirestore.instance
@@ -41,10 +42,14 @@ class _AuthScreenState extends State<AuthScreen> {
           {
             'username': username,
             'email': email,
+            'name': null,
+            'imageUrl': null,
+            'chats': [],
           },
         );
       } else {
         // in log in mode
+        print('_submitForm - login');
         userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
       }
@@ -68,8 +73,24 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        body: AuthForm(_submitAuthForm, _isLoading));
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: mediaQuery.size.height * 0.2),
+            height: mediaQuery.size.height * .2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(45.0),
+              child: Image(
+                image: AssetImage('assets/images/logo.jpg'),
+              ),
+            ),
+          ),
+          AuthForm(_submitAuthForm, _isLoading),
+        ],
+      ),
+    );
   }
 }

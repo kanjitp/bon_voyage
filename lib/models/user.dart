@@ -3,30 +3,34 @@ import 'package:geolocator/geolocator.dart';
 import 'post.dart';
 
 class User {
-  String userName;
-  String firstName;
-  String lastName;
+  String username;
+  String userId;
+  String name;
   String bio;
-  List<Post> memories;
-  List<User> followers;
-  List<User> followings;
+  String imageURL;
+  List<dynamic> chats;
+  List<String> memories;
+  List<String> followers;
+  List<String> followings;
   DateTime dateOfBirth;
   bool isVisible;
   double maxDistanceVisible;
   Position currentLocation;
 
   User(
-      this.userName,
-      this.firstName,
-      this.lastName,
+      {this.username,
+      this.name,
       this.bio,
+      this.userId,
+      this.imageURL,
+      this.chats,
       this.memories,
       this.followers,
       this.followings,
       this.dateOfBirth,
       this.isVisible,
       this.maxDistanceVisible,
-      this.currentLocation);
+      this.currentLocation});
 
   void setLocation(Position loc) {
     currentLocation = loc;

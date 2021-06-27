@@ -1,5 +1,5 @@
-import 'package:bon_voyage/screens/main_screen.dart';
 import 'package:flutter/material.dart';
+import './main_screen.dart';
 
 class PinScreen extends StatelessWidget {
   static final routeName = '/pin';

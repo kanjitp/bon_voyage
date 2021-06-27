@@ -1,15 +1,16 @@
-# Bon Voyage : Orbital AY 2020/21
+# bon_voyage_a_new_experience
 
-This repository represent the public progression of Orbital Project.
+A new Flutter project.
 
-** Note that this might not be the latest version of the application or progression of the application.
+## Getting Started
 
-If the viewer wish to see the latest code available, please contact
-the owner of the repository via telegram @ryukanjit
+This project is a starting point for a Flutter application.
 
-## Screenshot 
+A few resources to get you started if this is your first Flutter project:
 
-The following screenshot(s) is from Simulator.app using iPhone 12 Pro model.
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-![Screenshot1](./assets/images/screenshots/screenshot1.png?raw=true)
-
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

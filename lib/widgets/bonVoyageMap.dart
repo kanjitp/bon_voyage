@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:control_pad/control_pad.dart';
@@ -25,6 +26,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
   StreamSubscription _locationSubscription; // Stream of userlocation
   double calibration = -55; // calibration for heading of the image
   double postRadius = 90;
+  LatLng currentCoordinate = LatLng(1.296377, 103.776430);
 
   GoogleMapController _googleMapController;
 
@@ -100,7 +102,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
           CameraPosition(
             target: LatLng(userLocation.latitude, userLocation.longitude),
             tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
-            zoom: await _googleMapController.getZoomLevel(),
+            zoom: 18,
             bearing: userLocation.heading,
           ),
         ),
@@ -130,8 +132,27 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
     }
   }
 
-  PadButtonPressedCallback padButtonPressedCallback(
-      int buttonIndex, Gestures gesture) {}
+  JoystickDirectionCallback onDirectionChanged(
+      double degrees, double distance) {
+    // new Y
+    var newLat = currentCoordinate.latitude +
+        cos(degrees * pi / 180) * distance * 0.00025;
+    // new X
+    var newLong = currentCoordinate.longitude +
+        sin(degrees * pi / 180) * distance * 0.00025;
+
+    currentCoordinate = LatLng(newLat, newLong);
+
+    _googleMapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(newLat, newLong),
+          tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
+          zoom: 18,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +172,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
           zoomControlsEnabled: false,
           initialCameraPosition: CameraPosition(
             target: initialUserLocation == null
-                ? LatLng(1.296377, 103.776430)
+                ? currentCoordinate
                 : LatLng(initialUserLocation.latitude,
                     initialUserLocation.longitude),
             tilt: Provider.of<TiltLevel>(context, listen: false).tiltLevel,
@@ -175,7 +196,7 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
           left: mediaQuery.size.width / 3,
           child: ManeuverButton(
             size: mediaQuery.size.width / 3,
-            onDirectionChange: () {},
+            onDirectionChange: onDirectionChanged,
           ),
         ),
         Align(

@@ -1,10 +1,13 @@
+import 'package:bon_voyage_a_new_experience/models/chat.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NewMessage extends StatefulWidget {
-  const NewMessage({Key key}) : super(key: key);
+  Chat chat;
+
+  NewMessage({this.chat, Key key}) : super(key: key);
 
   @override
   _NewMessageState createState() => _NewMessageState();
@@ -17,7 +20,11 @@ class _NewMessageState extends State<NewMessage> {
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
     final currentUser = await FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance.collection('chat').add(
+    await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chat.chatId)
+        .collection('messages')
+        .add(
       {
         'text': _enteredMessage,
         'timestamp': Timestamp.now(),
@@ -29,45 +36,51 @@ class _NewMessageState extends State<NewMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(top: 8),
-        padding: EdgeInsets.all(8),
-        height: 55,
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              iconSize: 30,
-              onPressed: () {},
-              icon: Icon(
-                Icons.add_circle,
+    final mediaQuery = MediaQuery.of(context);
+    return SafeArea(
+      child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          height: 55,
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                iconSize: 30,
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add_circle,
+                  color: Theme.of(context).splashColor,
+                ),
+              ),
+              Expanded(
+                  child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: mediaQuery.size.width * 0.02),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).splashColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                      hintText: 'Message', border: InputBorder.none),
+                  textCapitalization: TextCapitalization.sentences,
+                  onChanged: (input) {
+                    setState(() {
+                      _enteredMessage = input;
+                    });
+                  },
+                ),
+              )),
+              IconButton(
                 color: Theme.of(context).splashColor,
+                onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+                icon: Icon(Icons.send),
               ),
-            ),
-            Expanded(
-                child: Container(
-              padding: EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: Theme.of(context).splashColor,
-                    style: BorderStyle.solid),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextField(
-                controller: _controller,
-                textCapitalization: TextCapitalization.sentences,
-                onChanged: (input) {
-                  setState(() {
-                    _enteredMessage = input;
-                  });
-                },
-              ),
-            )),
-            IconButton(
-              color: Theme.of(context).splashColor,
-              onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
-              icon: Icon(Icons.send),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 }

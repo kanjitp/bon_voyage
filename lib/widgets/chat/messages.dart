@@ -1,16 +1,22 @@
-import 'package:bon_voyage/widgets/chat/message_bubble.dart';
+import 'package:bon_voyage_a_new_experience/models/chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import './message_bubble.dart';
+
 class Messages extends StatelessWidget {
-  const Messages({Key key}) : super(key: key);
+  Chat chat;
+
+  Messages({this.chat, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('chat')
+          .collection('chats')
+          .doc(chat.chatId)
+          .collection('messages')
           .orderBy('timestamp')
           .snapshots(),
       builder: (ctx, chatSnapshot) {

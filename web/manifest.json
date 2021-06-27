@@ -1,6 +1,6 @@
 {
-    "name": "bon_voyage",
-    "short_name": "bon_voyage",
+    "name": "bon_voyage_a_new_experience",
+    "short_name": "bon_voyage_a_new_experience",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
