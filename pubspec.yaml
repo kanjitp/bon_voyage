@@ -41,6 +41,9 @@ dependencies:
   firebase_messaging: ^10.0.2
   path_provider: ^2.0.2
   image_picker: ^0.8.1+1
+  material_floating_search_bar: ^0.3.4
+  flappy_search_bar: ^1.7.2
+  timeago: ^3.1.0
 
 dev_dependencies:
   flutter_test:

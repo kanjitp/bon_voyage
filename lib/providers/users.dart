@@ -32,8 +32,12 @@ class Users with ChangeNotifier {
         username: user['username'],
         userId: user.id,
         imageURL: user['imageUrl'],
+        followers: user['followers'],
+        followings: user['followings'],
+        memories: user['posts'],
       ));
     });
+    print(_users);
     print('fetchUsers - users updated');
   }
 }

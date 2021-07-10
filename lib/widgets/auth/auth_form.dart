@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
   final void Function(
     String email,
     String password,
+    String name,
     String userName,
     bool isSignUp,
     BuildContext context,
@@ -21,10 +23,9 @@ class _AuthFormState extends State<AuthForm>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   AnimationController _animationController;
-  Animation<Offset> _slideAnimation;
-  Animation<double> _opacityAnimation;
   bool _isSignupMode = false;
   String _userEmail = '';
+  String _name = '';
   String _userName = '';
   String _userPassword = '';
 
@@ -35,16 +36,6 @@ class _AuthFormState extends State<AuthForm>
       vsync: this,
       duration: Duration(milliseconds: 350),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: Offset(0, -1.5),
-      end: Offset(0, 0),
-    ).animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.fastOutSlowIn));
-    // _heightAnimation.addListener(() => setState(() {}));
-    _opacityAnimation = Tween(begin: 0.0, end: 2.0).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeIn,
-    ));
   }
 
   @override
@@ -62,8 +53,11 @@ class _AuthFormState extends State<AuthForm>
 
     if (isValid) {
       _formKey.currentState.save();
-      widget.submitFn(
-          _userEmail.trim(), _userPassword, _userName, _isSignupMode, context);
+      widget.submitFn(_userEmail.trim(), _userPassword, _name, _userName,
+          _isSignupMode, context);
+      setState(() {
+        _isSignupMode = false;
+      });
     }
   }
 
@@ -91,6 +85,7 @@ class _AuthFormState extends State<AuthForm>
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     TextFormField(
+                      autocorrect: false,
                       key: ValueKey('email'),
                       validator: (input) {
                         if (input.isEmpty || !input.contains('@')) {
@@ -116,6 +111,34 @@ class _AuthFormState extends State<AuthForm>
                           maxHeight: _isSignupMode ? 100 : 0),
                       child: _isSignupMode
                           ? TextFormField(
+                              autocorrect: false,
+                              enabled: _isSignupMode,
+                              key: ValueKey('name'),
+                              validator: (input) {
+                                if (input.isEmpty || input.length < 4) {
+                                  return 'name must be at least 4 characters long';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  labelText: 'Name',
+                                  hintText: "FirstName LastName"),
+                              onSaved: (value) {
+                                _name = value;
+                              },
+                            )
+                          : null,
+                    ),
+                    AnimatedContainer(
+                      duration: Duration(milliseconds: 350),
+                      curve: Curves.easeIn,
+                      constraints: BoxConstraints(
+                          minHeight: _isSignupMode ? 60 : 0,
+                          maxHeight: _isSignupMode ? 100 : 0),
+                      child: _isSignupMode
+                          ? TextFormField(
+                              autocorrect: false,
                               enabled: _isSignupMode,
                               key: ValueKey('username'),
                               validator: (input) {
@@ -135,6 +158,7 @@ class _AuthFormState extends State<AuthForm>
                           : null,
                     ),
                     TextFormField(
+                      autocorrect: false,
                       key: ValueKey('password'),
                       validator: (input) {
                         if (input.isEmpty || input.length < 7) {
@@ -159,7 +183,9 @@ class _AuthFormState extends State<AuthForm>
                     if (!widget.isLoading)
                       RaisedButton(
                         child: Text(_isSignupMode ? 'Sign up' : 'Login'),
-                        onPressed: _submitLogin,
+                        onPressed: () async {
+                          _submitLogin();
+                        },
                       ),
                     if (!widget.isLoading)
                       FlatButton(

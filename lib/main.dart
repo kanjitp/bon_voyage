@@ -1,21 +1,23 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bon_voyage_a_new_experience/providers/chats.dart';
 import 'package:bon_voyage_a_new_experience/providers/users.dart';
 import 'package:bon_voyage_a_new_experience/screens/add_chat_screen.dart';
+import 'package:bon_voyage_a_new_experience/screens/setting_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import './screens/chat_screen.dart';
+import 'screens/menu_screen/chat/chat_screen.dart';
 import './screens/main_screen.dart';
-import './screens/pin_screen.dart';
-import './screens/profile_screen.dart';
+import 'screens/menu_screen/pin_screen.dart';
+import 'screens/menu_screen/profile_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/error_screen.dart';
-import './screens/edit_profile_screen.dart';
+import 'screens/menu_screen/profile/edit_profile_screen.dart';
 import './screens/auth_screen.dart';
 import './providers/mapController.dart';
 import './providers/tilt_level.dart';
@@ -44,10 +46,17 @@ class MyApp extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class BonVoyage extends StatelessWidget {
+class BonVoyage extends StatefulWidget {
   AsyncSnapshot appSnapShot;
 
   BonVoyage(this.appSnapShot);
+
+  @override
+  _BonVoyageState createState() => _BonVoyageState();
+}
+
+class _BonVoyageState extends State<BonVoyage> {
+  Timer _timer;
 
   @override
   Widget build(BuildContext context) {
@@ -63,18 +72,21 @@ class BonVoyage extends StatelessWidget {
       child: MaterialApp(
         title: 'Bon Voyage',
         debugShowCheckedModeBanner: false,
-        home: appSnapShot.connectionState != ConnectionState.done
+        home: widget.appSnapShot.connectionState != ConnectionState.done
             ? SplashScreen()
             : StreamBuilder(
-                stream: FirebaseAuth.instance.authStateChanges(),
+                stream: FirebaseAuth.instance
+                    .authStateChanges()
+                    .where((user) => user.emailVerified),
                 builder: (ctx, userSnapshot) {
-                  if (userSnapshot.hasData) {
-                    // load all the chats initially
+                  if (userSnapshot.hasData &&
+                      userSnapshot.requireData.emailVerified) {
                     return MainScreen();
                   } else {
                     return AuthScreen();
                   }
-                }),
+                },
+              ),
         theme: ThemeData(
             primaryColor: Color.fromARGB(0xFF, 0xF7, 0xCA, 0x56),
             accentColor: Color.fromARGB(0xFF, 0x00, 0x3C, 0x76),
@@ -106,7 +118,7 @@ class BonVoyage extends StatelessWidget {
           PinScreen.routeName: (ctx) => PinScreen(),
           AuthScreen.routeName: (ctx) => AuthScreen(),
           EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
-          AddChatScreen.routeName: (ctx) => AddChatScreen(),
+          SettingScreen.routeName: (ctx) => SettingScreen(),
         },
       ),
     );

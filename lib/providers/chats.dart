@@ -24,26 +24,28 @@ class Chats with ChangeNotifier {
         .doc(currentUser.uid)
         .get();
 
-    List<dynamic> chatIds = userData['chats'];
+    // containing userIds
+    List<dynamic> chats = userData['chats'];
 
-    chatIds.forEach(
-      (chatId) async {
+    chats.forEach(
+      (chatmap) async {
+        final someUserId = chatmap.keys.first;
+        final someChatId = chatmap[someUserId];
         final chatRoomData = await FirebaseFirestore.instance
             .collection('chats')
-            .doc(chatId)
+            .doc(someChatId)
             .get();
-        final user1Id = chatRoomData['user1'];
-        final user2Id = chatRoomData['user2'];
-        final otherUserId = user1Id == currentUser.uid ? user2Id : user1Id;
         final otherUserData = await FirebaseFirestore.instance
             .collection('users')
-            .doc(otherUserId)
+            .doc(someUserId)
             .get();
 
         _currentChats.add(
           Chat(
             name: otherUserData['name'],
-            chatId: chatId,
+            chatId: someChatId,
+            lastmessage: chatRoomData['lastmessage'],
+            timestamp: chatRoomData['timestamp'],
             image: otherUserData['imageUrl'],
           ),
         );

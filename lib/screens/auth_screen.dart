@@ -1,3 +1,4 @@
+import 'package:bon_voyage_a_new_experience/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import '../widgets/auth/auth_form.dart';
 class AuthScreen extends StatefulWidget {
   static final routeName = '/auth';
 
-  const AuthScreen({Key key}) : super(key: key);
+  AuthScreen({key}) : super(key: key);
 
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -21,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void _submitAuthForm(
     String email,
     String password,
+    String name,
     String username,
     bool isSignUp,
     BuildContext ctx,
@@ -35,6 +37,8 @@ class _AuthScreenState extends State<AuthScreen> {
         print('_submitForm - sign up');
         userCredential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+        await userCredential.user.updateDisplayName(username);
+        await userCredential.user.sendEmailVerification();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user.uid)
@@ -42,16 +46,47 @@ class _AuthScreenState extends State<AuthScreen> {
           {
             'username': username,
             'email': email,
-            'name': null,
+            'name': name,
             'imageUrl': null,
             'chats': [],
+            'followers': [],
+            'followings': [],
+            'posts': [],
           },
         );
+
+        await _auth.signOut();
+
+        Scaffold.of(ctx).showSnackBar(SnackBar(
+          content: Text(
+            'An email has been sent to you, Click the link provided to complete signing-up',
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.green,
+        ));
+        setState(() {
+          _isLoading = false;
+        });
       } else {
         // in log in mode
         print('_submitForm - login');
         userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
+        // 2 lines below reload the user
+        await _auth.currentUser.reload();
+        await _auth.currentUser.getIdToken(true);
+        if (!userCredential.user.emailVerified) {
+          Scaffold.of(ctx).showSnackBar(SnackBar(
+            content: Text(
+              'This account has not been verified yet, please verify your account to complete your registration',
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Theme.of(context).errorColor,
+          ));
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     } catch (error) {
       var message = 'An error occurred, please check your credentials!';

@@ -5,6 +5,8 @@ import '../screens/auth_screen.dart';
 import './main_screen.dart';
 
 class SettingScreen extends StatelessWidget {
+  static const routeName = '/settings';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,24 +14,7 @@ class SettingScreen extends StatelessWidget {
         title: Text('Settings'),
         leading: BackButton(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                            begin: const Offset(-1.0, 0.0), end: Offset.zero)
-                        .animate(animation),
-                    child: child,
-                  );
-                },
-                pageBuilder: (context, animation, animationTime) {
-                  return MainScreen();
-                },
-                transitionDuration: Duration(milliseconds: 200),
-              ),
-            );
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -78,7 +63,8 @@ class SettingScreen extends StatelessWidget {
                                   stream:
                                       FirebaseAuth.instance.authStateChanges(),
                                   builder: (ctx, userSnapshot) {
-                                    if (userSnapshot.hasData) {
+                                    if (userSnapshot.hasData &&
+                                        userSnapshot.data.emailVerified) {
                                       return MainScreen();
                                     } else {
                                       return AuthScreen();

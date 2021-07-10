@@ -1,8 +1,9 @@
 import 'package:bon_voyage_a_new_experience/models/chat.dart';
 import 'package:bon_voyage_a_new_experience/models/user.dart';
+import 'package:bon_voyage_a_new_experience/providers/chats.dart';
 import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
 import 'package:bon_voyage_a_new_experience/providers/users.dart';
-import 'package:bon_voyage_a_new_experience/screens/chat_screen.dart';
+import 'package:bon_voyage_a_new_experience/screens/menu_screen/chat/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,9 @@ import 'package:provider/provider.dart';
 class AddChatScreen extends StatefulWidget {
   static final routeName = '/add-chat';
 
-  AddChatScreen({Key key}) : super(key: key);
+  final Function() refreshChat;
+
+  AddChatScreen({@required this.refreshChat, Key key}) : super(key: key);
 
   @override
   _AddChatScreenState createState() => _AddChatScreenState();
@@ -31,7 +34,10 @@ class _AddChatScreenState extends State<AddChatScreen> {
           Expanded(
             child: ListView.builder(
                 itemBuilder: (ctx, index) {
-                  return UserCard(user: users[index]);
+                  return UserCard(
+                    user: users[index],
+                    refreshChats: widget.refreshChat,
+                  );
                 },
                 itemCount: users.length),
           ),
@@ -44,11 +50,13 @@ class _AddChatScreenState extends State<AddChatScreen> {
 class UserCard extends StatelessWidget {
   UserCard({
     this.user,
+    this.refreshChats,
     Key key,
   }) : super(key: key);
 
   // user we want to add
   User user;
+  Function refreshChats;
 
   Future<String> _addChatDataToUsers(User user, User anotherUser) async {
     print(user.userId);

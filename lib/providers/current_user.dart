@@ -21,6 +21,9 @@ class CurrentUser with ChangeNotifier {
       name: userData['name'],
       imageURL: userData['imageUrl'],
       chats: userData['chats'],
+      followers: userData['followers'],
+      followings: userData['followings'],
+      memories: userData['posts'],
     );
     print('CurrentUser - updated');
   }

@@ -9,9 +9,9 @@ class User {
   String bio;
   String imageURL;
   List<dynamic> chats;
-  List<String> memories;
-  List<String> followers;
-  List<String> followings;
+  List<dynamic> memories;
+  List<dynamic> followers;
+  List<dynamic> followings;
   DateTime dateOfBirth;
   bool isVisible;
   double maxDistanceVisible;
@@ -34,5 +34,10 @@ class User {
 
   void setLocation(Position loc) {
     currentLocation = loc;
+  }
+
+  @override
+  String toString() {
+    return '$this.username $this.name $this.imageURL';
   }
 }

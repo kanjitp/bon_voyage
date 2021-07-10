@@ -1,13 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Chat {
-  final String name, lastMessage, image, time, chatId;
+  final String name, lastmessage, image, chatId;
+  final Timestamp timestamp;
   final bool isActive;
 
   Chat({
     this.name,
     this.chatId,
-    this.lastMessage,
+    this.lastmessage,
     this.image,
-    this.time,
+    this.timestamp,
     this.isActive,
   });
 }

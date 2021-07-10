@@ -124,6 +124,8 @@ class _BonVoyageMapState extends State<BonVoyageMap> {
           ),
         );
         updateMarkerAndCircle(newLocationData, imageData);
+        currentCoordinate =
+            LatLng(newLocationData.latitude, newLocationData.longitude);
       });
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_DENIED") {

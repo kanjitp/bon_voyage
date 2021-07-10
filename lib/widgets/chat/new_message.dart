@@ -20,6 +20,7 @@ class _NewMessageState extends State<NewMessage> {
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
     final currentUser = await FirebaseAuth.instance.currentUser;
+    final timestamp = Timestamp.now();
     await FirebaseFirestore.instance
         .collection('chats')
         .doc(widget.chat.chatId)
@@ -27,10 +28,23 @@ class _NewMessageState extends State<NewMessage> {
         .add(
       {
         'text': _enteredMessage,
-        'timestamp': Timestamp.now(),
+        'timestamp': timestamp,
         'userId': currentUser.uid,
       },
     );
+    final chatRoomData = await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chat.chatId)
+        .get();
+    await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chat.chatId)
+        .set({
+      'user1': chatRoomData['user1'],
+      'user2': chatRoomData['user2'],
+      'timestamp': timestamp,
+      'lastmessage': _enteredMessage,
+    });
     _controller.clear();
   }
 
