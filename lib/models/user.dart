@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'post.dart';
@@ -10,6 +11,8 @@ class User {
   String imageURL;
   List<dynamic> chats;
   List<dynamic> memories;
+  List<dynamic> taggedPosts;
+  List<dynamic> pinnedPosts;
   List<dynamic> followers;
   List<dynamic> followings;
   DateTime dateOfBirth;
@@ -29,6 +32,8 @@ class User {
       this.followings,
       this.dateOfBirth,
       this.isVisible,
+      this.taggedPosts,
+      this.pinnedPosts,
       this.maxDistanceVisible,
       this.currentLocation});
 
@@ -36,8 +41,35 @@ class User {
     currentLocation = loc;
   }
 
+  static Future<User> getUserFromId(String userId) async {
+    final userData =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return User(
+      userId: userId,
+      username: userData['username'],
+      name: userData['name'],
+      imageURL: userData['imageUrl'],
+      chats: userData['chats'],
+      memories: userData['posts'],
+      followers: userData['followers'],
+      followings: userData['followings'],
+      taggedPosts: userData['tagged_posts'],
+      pinnedPosts: userData['pinned_posts'],
+    );
+  }
+
   @override
-  String toString() {
-    return '$this.username $this.name $this.imageURL';
+  int get hashCode => userId.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    // TODO: implement ==
+    if (!(other is User)) {
+      return false;
+    } else {
+      // ignore: test_types_in_equals
+      User otherUser = other as User;
+      return this.userId == otherUser.userId;
+    }
   }
 }

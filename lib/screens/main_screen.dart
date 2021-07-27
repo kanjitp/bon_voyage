@@ -3,18 +3,20 @@ import 'package:bon_voyage_a_new_experience/screens/menu_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:provider/provider.dart';
 
-import 'menu_screen/chatroom_screen.dart';
-import 'menu_screen/pin_screen.dart';
 import './setting_screen.dart';
-import 'menu_screen/profile_screen.dart';
 import '../widgets/bonVoyageMap.dart';
 import '../providers/current_user.dart';
 
 class MainScreen extends StatefulWidget {
   static final routeName = '/main';
+
+  final initialCameraPosition;
+  final forceNavigation;
+
+  MainScreen([this.initialCameraPosition, this.forceNavigation = false]);
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -57,7 +59,10 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          BonVoyageMap(),
+          BonVoyageMap(
+            initialCoordinate: widget.initialCameraPosition,
+            forceNavigation: widget.forceNavigation,
+          ),
           Positioned(
             left: mediaQuery.size.width * 0.8825,
             top: mediaQuery.size.height * 0.130,

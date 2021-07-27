@@ -17,6 +17,8 @@ class TravelersScreen extends StatefulWidget {
   _TravelersScreenState createState() => _TravelersScreenState();
 }
 
+enum ProfileMode { map, memories, tagged }
+
 class _TravelersScreenState extends State<TravelersScreen> {
   String _query = " ";
   User currentUser;
@@ -34,172 +36,179 @@ class _TravelersScreenState extends State<TravelersScreen> {
   }
 
   Widget buildFloatingSearchBar(User currentUser) {
-    return FloatingSearchBar(
-      autocorrect: false,
-      borderRadius: BorderRadius.circular(8),
-      hint: "Search Travelers...",
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(currentUser.userId)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            } else {
-              List<dynamic> followerIds = snapshot.data['followers'];
-              List<dynamic> followingIds = snapshot.data['followings'];
-              return Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                        ),
-                        Text('Followers: ${followerIds.length.toString()}'),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: followerIds.length,
-                          itemBuilder: (ctx, index) {
-                            String followerId = followerIds[index];
-                            return FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(followerId)
-                                  .get(),
-                              builder: (ctx, userSnapshot) {
-                                if (!userSnapshot.hasData) {
-                                  return CircularProgressIndicator();
-                                } else {
-                                  return TravelerCard(
-                                    user: User(
-                                      userId: followerId,
-                                      name: userSnapshot.data['name'],
-                                      username: userSnapshot.data['username'],
-                                      imageURL: userSnapshot.data['imageUrl'],
-                                      chats: userSnapshot.data['chats'],
-                                      followers: userSnapshot.data['followers'],
-                                      followings:
-                                          userSnapshot.data['followings'],
-                                      memories: userSnapshot.data['posts'],
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  VerticalDivider(),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                        ),
-                        Text('Following: ${followingIds.length.toString()}'),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: followingIds.length,
-                          physics: const BouncingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics(),
+    return Container(
+      color: Colors.white70,
+      child: FloatingSearchBar(
+        autocorrect: false,
+        borderRadius: BorderRadius.circular(8),
+        hint: "Search Travelers...",
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(currentUser.userId)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              } else {
+                List<dynamic> followerIds = snapshot.data['followers'];
+                List<dynamic> followingIds = snapshot.data['followings'];
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
                           ),
-                          itemBuilder: (ctx, index) {
-                            var followingId = followingIds[index];
-                            return FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(followingId)
-                                  .get(),
-                              builder: (ctx, userSnapshot) {
-                                if (!userSnapshot.hasData) {
-                                  return CircularProgressIndicator();
-                                } else {
-                                  return TravelerCard(
-                                    user: User(
-                                      userId: followingId,
-                                      name: userSnapshot.data['name'],
-                                      username: userSnapshot.data['username'],
-                                      imageURL: userSnapshot.data['imageUrl'],
-                                      chats: userSnapshot.data['chats'],
-                                      followers: userSnapshot.data['followers'],
-                                      followings:
-                                          userSnapshot.data['followings'],
-                                      memories: userSnapshot.data['posts'],
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
-                      ],
+                          Text('Followers: ${followerIds.length.toString()}'),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: followerIds.length,
+                            itemBuilder: (ctx, index) {
+                              String followerId = followerIds[index];
+                              return FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(followerId)
+                                    .get(),
+                                builder: (ctx, userSnapshot) {
+                                  if (!userSnapshot.hasData) {
+                                    return CircularProgressIndicator();
+                                  } else {
+                                    return TravelerCard(
+                                      user: User(
+                                        userId: followerId,
+                                        name: userSnapshot.data['name'],
+                                        username: userSnapshot.data['username'],
+                                        imageURL: userSnapshot.data['imageUrl'],
+                                        chats: userSnapshot.data['chats'],
+                                        followers:
+                                            userSnapshot.data['followers'],
+                                        followings:
+                                            userSnapshot.data['followings'],
+                                        memories: userSnapshot.data['posts'],
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                          ),
+                          Text('Following: ${followingIds.length.toString()}'),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: followingIds.length,
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            itemBuilder: (ctx, index) {
+                              var followingId = followingIds[index];
+                              return FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(followingId)
+                                    .get(),
+                                builder: (ctx, userSnapshot) {
+                                  if (!userSnapshot.hasData) {
+                                    return CircularProgressIndicator();
+                                  } else {
+                                    return TravelerCard(
+                                      user: User(
+                                        userId: followingId,
+                                        name: userSnapshot.data['name'],
+                                        username: userSnapshot.data['username'],
+                                        imageURL: userSnapshot.data['imageUrl'],
+                                        chats: userSnapshot.data['chats'],
+                                        followers:
+                                            userSnapshot.data['followers'],
+                                        followings:
+                                            userSnapshot.data['followings'],
+                                        memories: userSnapshot.data['posts'],
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            }),
+        onQueryChanged: (newQuery) {
+          setState(() {
+            _query = newQuery == null ? "" : newQuery;
+          });
+        },
+        builder: (context, transition) {
+          return StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              } else {
+                List<dynamic> users = snapshot.data.docs
+                    .map((DocumentSnapshot doc) => User(
+                          userId: doc.id,
+                          username: doc['username'],
+                          name: doc['name'],
+                          imageURL: doc['imageUrl'],
+                          followers: doc['followers'],
+                          followings: doc['followings'],
+                          memories: doc['posts'],
+                          chats: doc['chats'],
+                        ))
+                    .toList();
+                users = users
+                    .where((user) =>
+                        user.name
+                            .toLowerCase()
+                            .contains(_query.toLowerCase()) ||
+                        user.username
+                            .toLowerCase()
+                            .contains(_query.toLowerCase()))
+                    .toList();
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    color: Colors.white,
+                    child: new ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: min(users.length, 8),
+                      itemBuilder: (context, index) {
+                        User user = users[index];
+                        return QueryCard(
+                          user: user,
+                        );
+                      },
                     ),
                   ),
-                ],
-              );
-            }
-          }),
-      onQueryChanged: (newQuery) {
-        setState(() {
-          _query = newQuery == null ? "" : newQuery;
-        });
-      },
-      builder: (context, transition) {
-        return StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('users').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            } else {
-              List<dynamic> users = snapshot.data.docs
-                  .map((DocumentSnapshot doc) => User(
-                        userId: doc.id,
-                        username: doc['username'],
-                        name: doc['name'],
-                        imageURL: doc['imageUrl'],
-                        followers: doc['followers'],
-                        followings: doc['followings'],
-                        memories: doc['posts'],
-                        chats: doc['chats'],
-                      ))
-                  .toList();
-              users = users
-                  .where((user) =>
-                      user.name.toLowerCase().contains(_query.toLowerCase()) ||
-                      user.username
-                          .toLowerCase()
-                          .contains(_query.toLowerCase()))
-                  .toList();
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  color: Colors.white,
-                  child: new ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: min(users.length, 8),
-                    itemBuilder: (context, index) {
-                      User user = users[index];
-                      return QueryCard(
-                        user: user,
-                      );
-                    },
-                  ),
-                ),
-              );
-            }
-          },
-        );
-      },
+                );
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -213,7 +222,6 @@ class QueryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        print(user.userId);
         Navigator.push(
           context,
           PageRouteBuilder(

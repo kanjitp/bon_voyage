@@ -1,3 +1,4 @@
+import 'package:bon_voyage_a_new_experience/models/user_presence.dart';
 import 'package:bon_voyage_a_new_experience/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,12 @@ class AuthScreen extends StatefulWidget {
   _AuthScreenState createState() => _AuthScreenState();
 }
 
+enum AuthMode {
+  signUp,
+  logIn,
+  forgotPassword,
+}
+
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
@@ -24,7 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
     String password,
     String name,
     String username,
-    bool isSignUp,
+    AuthMode mode,
     BuildContext ctx,
   ) async {
     UserCredential userCredential;
@@ -32,7 +39,7 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _isLoading = true;
       });
-      if (isSignUp) {
+      if (mode == AuthMode.signUp) {
         // in sign up mode
         print('_submitForm - sign up');
         userCredential = await _auth.createUserWithEmailAndPassword(
@@ -52,14 +59,32 @@ class _AuthScreenState extends State<AuthScreen> {
             'followers': [],
             'followings': [],
             'posts': [],
+            'pinned_posts': [],
+            'tagged_posts': [],
           },
         );
+
+        await FirebaseFirestore.instance
+            .collection('status')
+            .doc(userCredential.user.uid)
+            .set({
+          'last_changed': Timestamp.now(),
+          'state': "online",
+        });
+
+        await FirebaseFirestore.instance
+            .collection('archive')
+            .doc(userCredential.user.uid)
+            .set({
+          'chats': [],
+          'posts': [],
+        });
 
         await _auth.signOut();
 
         Scaffold.of(ctx).showSnackBar(SnackBar(
           content: Text(
-            'An email has been sent to you, Click the link provided to complete signing-up',
+            'An email has been sent to you, click the link provided to complete signing-up',
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.green,
@@ -67,7 +92,7 @@ class _AuthScreenState extends State<AuthScreen> {
         setState(() {
           _isLoading = false;
         });
-      } else {
+      } else if (mode == AuthMode.logIn) {
         // in log in mode
         print('_submitForm - login');
         userCredential = await _auth.signInWithEmailAndPassword(
@@ -86,7 +111,20 @@ class _AuthScreenState extends State<AuthScreen> {
           setState(() {
             _isLoading = false;
           });
-        }
+        } else {}
+      } else if (mode == AuthMode.forgotPassword) {
+        print('reached');
+        await _auth.sendPasswordResetEmail(email: email);
+        Scaffold.of(ctx).showSnackBar(SnackBar(
+          content: Text(
+            'A password reset link has been sent to $email, please click the link provided to complete your password reset',
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.green,
+        ));
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (error) {
       var message = 'An error occurred, please check your credentials!';

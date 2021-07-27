@@ -46,12 +46,14 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
         await FirebaseFirestore.instance.collection('chats').add({
       'user1': userId,
       'user2': anotherUserId,
+      'lastmessage': "",
+      'timestamp': Timestamp.now(),
     });
 
     final chatRoomId = chatRoomData.id;
 
     // initialised
-    List<Map<String, String>> newUserChats;
+    List<Map<String, dynamic>> newUserChats;
     print(userData);
 
     if (!userData.data().containsKey('chats')) {
@@ -63,7 +65,7 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
       newUserChats.add({anotherUserId: chatRoomId});
     }
 
-    List<Map<String, String>> newAnotherUserChats;
+    List<Map<String, dynamic>> newAnotherUserChats;
 
     if (!anotherUserData.data().containsKey('chats')) {
       newAnotherUserChats = [
@@ -74,29 +76,18 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
       newAnotherUserChats.add({userId: chatRoomId});
     }
 
-    await FirebaseFirestore.instance.collection('users').doc(userId).set(
+    await FirebaseFirestore.instance.collection('users').doc(userId).update(
       {
-        'email': userData['email'],
-        'username': userData['username'],
-        'name': userData['name'],
-        'imageUrl': userData['imageUrl'],
         'chats': newUserChats,
-        'followers': userData['followers'],
-        'followings': userData['followings'],
-        'posts': userData['posts'],
       },
     );
 
-    await FirebaseFirestore.instance.collection('users').doc(anotherUserId).set(
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(anotherUserId)
+        .update(
       {
-        'email': anotherUserData['email'],
-        'username': anotherUserData['username'],
-        'name': anotherUserData['name'],
-        'imageUrl': anotherUserData['imageUrl'],
         'chats': newAnotherUserChats,
-        'followers': anotherUserData['followers'],
-        'followings': anotherUserData['followings'],
-        'posts': anotherUserData['posts'],
       },
     );
     return chatRoomId;
@@ -123,15 +114,8 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
     } else {
       newFollowers = [...userData['followers'], widget.currentUser.userId];
     }
-    _firestore.collection('users').doc(widget.user.userId).set({
-      'email': userData['email'],
-      'username': userData['username'],
-      'name': userData['name'],
-      'imageUrl': userData['imageUrl'],
-      'chats': userData['chats'],
+    _firestore.collection('users').doc(widget.user.userId).update({
       'followers': newFollowers,
-      'followings': userData['followings'],
-      'posts': userData['posts'],
     });
     final currentUserData = await FirebaseFirestore.instance
         .collection('users')
@@ -146,15 +130,8 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
       newFollowings = [...currentUserData['followings'], widget.user.userId];
     }
 
-    _firestore.collection('users').doc(widget.currentUser.userId).set({
-      'email': currentUserData['email'],
-      'username': currentUserData['username'],
-      'name': currentUserData['name'],
-      'imageUrl': currentUserData['imageUrl'],
-      'chats': currentUserData['chats'],
-      'followers': currentUserData['followers'],
+    _firestore.collection('users').doc(widget.currentUser.userId).update({
       'followings': newFollowings,
-      'posts': currentUserData['posts'],
     });
     print('updateDatabase - completed');
     // re-render
@@ -197,6 +174,7 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
     );
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: appBar,
       body: widget.currentUser.userId == widget.user.userId
           ? ProfileScreen()
@@ -213,7 +191,7 @@ class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
   }
 }
 
-class TravelerProfileBody extends StatelessWidget {
+class TravelerProfileBody extends StatefulWidget {
   final User user;
   final Function addChat;
   final Function followAndUnfollow;
@@ -232,6 +210,13 @@ class TravelerProfileBody extends StatelessWidget {
     @required this.initiallyFollowed,
     Key key,
   }) : super(key: key);
+
+  @override
+  _TravelerProfileBodyState createState() => _TravelerProfileBodyState();
+}
+
+class _TravelerProfileBodyState extends State<TravelerProfileBody> {
+  ProfileMode currentMode = ProfileMode.map;
 
   @override
   Widget build(BuildContext context) {
@@ -255,9 +240,9 @@ class TravelerProfileBody extends StatelessWidget {
                         CircleAvatar(
                           radius: MediaQuery.of(context).size.width * 0.125,
                           backgroundColor: Colors.grey,
-                          backgroundImage: user.imageURL == null
+                          backgroundImage: widget.user.imageURL == null
                               ? AssetImage('./assets/images/dummy_user.png')
-                              : NetworkImage(user.imageURL),
+                              : NetworkImage(widget.user.imageURL),
                         ),
                         SizedBox(
                           height: mediaQuery.size.height * 0.01,
@@ -273,7 +258,7 @@ class TravelerProfileBody extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.name,
+                                widget.user.name,
                                 style: TextStyle(
                                   color: Color(0xFF282728),
                                   fontWeight: FontWeight.w800,
@@ -284,7 +269,7 @@ class TravelerProfileBody extends StatelessWidget {
                                   height: MediaQuery.of(context).size.height *
                                       0.005),
                               Text(
-                                '@' + user.username,
+                                '@' + widget.user.username,
                                 style: TextStyle(
                                   color: Color(0xFF485777),
                                   fontSize: 18,
@@ -303,7 +288,7 @@ class TravelerProfileBody extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    user.memories.length.toString(),
+                                    widget.user.memories.length.toString(),
                                     style: TextStyle(
                                       color: Color(0xFF485777),
                                       fontSize: 18,
@@ -330,13 +315,19 @@ class TravelerProfileBody extends StatelessWidget {
                                   Row(
                                     children: [
                                       Text(
-                                        (initiallyFollowed
-                                                ? havetoUpdateDatabase
-                                                    ? user.followers.length - 1
-                                                    : user.followers.length
-                                                : havetoUpdateDatabase
-                                                    ? user.followers.length + 1
-                                                    : user.followers.length)
+                                        (widget.initiallyFollowed
+                                                ? widget.havetoUpdateDatabase
+                                                    ? widget.user.followers
+                                                            .length -
+                                                        1
+                                                    : widget
+                                                        .user.followers.length
+                                                : widget.havetoUpdateDatabase
+                                                    ? widget.user.followers
+                                                            .length +
+                                                        1
+                                                    : widget
+                                                        .user.followers.length)
                                             .toString(),
                                         style: TextStyle(
                                           color: Color(0xFF485777),
@@ -362,7 +353,8 @@ class TravelerProfileBody extends StatelessWidget {
                                   Row(
                                     children: [
                                       Text(
-                                        user.followings.length.toString(),
+                                        widget.user.followings.length
+                                            .toString(),
                                         style: TextStyle(
                                           color: Color(0xFF485777),
                                           fontSize: 14,
@@ -400,14 +392,14 @@ class TravelerProfileBody extends StatelessWidget {
                         margin: EdgeInsets.all(8),
                         child: ElevatedButton(
                           onPressed: () async {
-                            followAndUnfollow();
+                            widget.followAndUnfollow();
                           },
-                          child: isFollowed
+                          child: widget.isFollowed
                               ? Text(
                                   'Following',
                                 )
                               : Text('Follow'),
-                          style: isFollowed
+                          style: widget.isFollowed
                               ? ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
@@ -427,12 +419,13 @@ class TravelerProfileBody extends StatelessWidget {
                           onPressed: () async {
                             String chatId;
                             bool haveChat = false;
+
                             // check for already available chat
                             for (var map in currentUser.chats) {
-                              if (map.containsKey(user.userId)) {
+                              if (map.containsKey(widget.user.userId)) {
                                 print(
                                     'travelerProfileScreen - found existing chat');
-                                chatId = map[user.userId];
+                                chatId = map[widget.user.userId];
                                 haveChat = true;
                               }
                             }
@@ -441,9 +434,14 @@ class TravelerProfileBody extends StatelessWidget {
                               print(
                                   'travelerProfileScreen - did not find any chat');
                               print('initiating new chatroom ...');
-                              chatId = await addChat(
-                                  currentUser.userId, user.userId);
+                              chatId = await widget.addChat(
+                                  currentUser.userId, widget.user.userId);
                             }
+                            final statusData = await FirebaseFirestore.instance
+                                .collection('status')
+                                .doc(widget.user.userId)
+                                .get();
+
                             Navigator.push(
                               context,
                               PageRouteBuilder(
@@ -468,8 +466,17 @@ class TravelerProfileBody extends StatelessWidget {
                                     (context, animation, animationTime) {
                                   return ChatScreen(Chat(
                                     chatId: chatId,
-                                    name: user.username,
-                                    image: user.imageURL,
+                                    name: widget.user.name,
+                                    userId: widget.user.userId,
+                                    username: widget.user.username,
+                                    image: widget.user.imageURL,
+                                    isActive: statusData['state'] == 'online' ||
+                                        (statusData['state'] == 'offline' &&
+                                            DateTime.now()
+                                                .subtract(Duration(minutes: 5))
+                                                .isBefore(
+                                                    statusData['last_changed']
+                                                        .toDate())),
                                   ));
                                 },
                                 transitionDuration: Duration(milliseconds: 200),
@@ -487,35 +494,75 @@ class TravelerProfileBody extends StatelessWidget {
                     )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Text(
-                      user.name == null ? 'pending' : user.name + '\'s Map',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    // Dummy icon button for now
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          IconButton(
-                              icon: Icon(Icons.account_tree), onPressed: () {}),
-                          SizedBox(
-                            width: mediaQuery.size.width * 0.02,
-                          ),
-                          IconButton(
-                              icon: Icon(Icons.account_tree), onPressed: () {}),
-                          SizedBox(
-                            width: mediaQuery.size.width * 0.02,
-                          ),
-                          IconButton(
-                              icon: Icon(Icons.account_tree), onPressed: () {})
-                        ])
-                  ],
-                ),
               ],
             ),
-            Expanded(child: BonVoyageMap())
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text(
+                  widget.user.name == null
+                      ? 'pending'
+                      : widget.user.name + '\'s Map',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                // Dummy icon button for now
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      IconButton(
+                          icon: currentMode == ProfileMode.map
+                              ? Icon(
+                                  Icons.location_on_rounded,
+                                  color: Theme.of(context).splashColor,
+                                )
+                              : Icon(Icons.location_on_rounded),
+                          onPressed: () {
+                            setState(() {
+                              currentMode = ProfileMode.map;
+                            });
+                          }),
+                      SizedBox(
+                        width: mediaQuery.size.width * 0.02,
+                      ),
+                      IconButton(
+                          icon: currentMode == ProfileMode.memories
+                              ? Icon(
+                                  Icons.grid_on_rounded,
+                                  color: Theme.of(context).splashColor,
+                                )
+                              : Icon(Icons.grid_on_rounded),
+                          onPressed: () {
+                            setState(() {
+                              currentMode = ProfileMode.memories;
+                            });
+                          }),
+                      SizedBox(
+                        width: mediaQuery.size.width * 0.02,
+                      ),
+                      IconButton(
+                          icon: currentMode == ProfileMode.tagged
+                              ? Icon(
+                                  Icons.supervised_user_circle_outlined,
+                                  color: Theme.of(context).splashColor,
+                                )
+                              : Icon(Icons.supervised_user_circle_outlined),
+                          onPressed: () {
+                            setState(() {
+                              currentMode = ProfileMode.tagged;
+                            });
+                          })
+                    ])
+              ],
+            ),
+            if (currentMode == ProfileMode.map)
+              Expanded(
+                child: BonVoyageMap(
+                  allowPost: false,
+                ),
+              ),
+            if (currentMode == ProfileMode.memories)
+              Expanded(child: Container()),
+            if (currentMode == ProfileMode.tagged) Expanded(child: Container()),
           ],
         ),
       ),

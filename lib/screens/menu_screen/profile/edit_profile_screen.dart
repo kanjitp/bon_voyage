@@ -66,7 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .collection('users')
         .doc(currentUser.uid)
         .get();
-    print(userData['imageUrl']);
+
     if (_oldImagefile == null &&
         userData != null &&
         userData['imageUrl'] != null) {
@@ -109,25 +109,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser.uid)
-        .set(
+        .update(
       {
-        'email': userData['email'],
         'username': _initValues['username'],
         'name': _initValues['name'],
         'imageUrl':
             _userImageURL == null ? userData['imageUrl'] : _userImageURL,
-        'chats': userData['chats'],
-        'followers': userData['followers'],
-        'followings': userData['followings'],
-        'posts': userData['posts'],
       },
     );
     print('updateCloudFirestore - updated');
   }
 
   void _navigateBack(BuildContext context) async {
-    await Provider.of<Chats>(context, listen: false).fetchChats();
-    final chats = Provider.of<Chats>(context, listen: false).chats;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

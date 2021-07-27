@@ -2,6 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bon_voyage_a_new_experience/providers/chats.dart';
+import 'package:bon_voyage_a_new_experience/providers/file_provider.dart';
+import 'package:bon_voyage_a_new_experience/providers/markers_notifier.dart';
+import 'package:bon_voyage_a_new_experience/providers/posts.dart';
+import 'package:bon_voyage_a_new_experience/providers/settings.dart';
+import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
 import 'package:bon_voyage_a_new_experience/providers/users.dart';
 import 'package:bon_voyage_a_new_experience/screens/add_chat_screen.dart';
 import 'package:bon_voyage_a_new_experience/screens/setting_screen.dart';
@@ -56,8 +61,6 @@ class BonVoyage extends StatefulWidget {
 }
 
 class _BonVoyageState extends State<BonVoyage> {
-  Timer _timer;
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -68,6 +71,11 @@ class _BonVoyageState extends State<BonVoyage> {
         ChangeNotifierProvider(create: (pCtx) => CurrentUser()),
         ChangeNotifierProvider(create: (pCtx) => Users()),
         ChangeNotifierProvider(create: (pCtx) => Chats()),
+        ChangeNotifierProvider(create: (pCtx) => Settings()),
+        ChangeNotifierProvider(create: (pCtx) => MarkersNotifier()),
+        ChangeNotifierProvider(create: (pCtx) => TaggedUsers()),
+        ChangeNotifierProvider(create: (pCtx) => FileProvider()),
+        ChangeNotifierProvider(create: (pCtx) => Posts())
       ],
       child: MaterialApp(
         title: 'Bon Voyage',

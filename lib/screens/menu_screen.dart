@@ -72,6 +72,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           shadowColor: Colors.transparent,
           title: Row(
@@ -131,7 +132,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 break;
               case 2:
                 // Chats
-                await Provider.of<Chats>(context, listen: false).fetchChats();
                 break;
               case 3:
                 // Travelers

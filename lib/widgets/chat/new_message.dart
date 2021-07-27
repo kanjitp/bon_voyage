@@ -32,16 +32,10 @@ class _NewMessageState extends State<NewMessage> {
         'userId': currentUser.uid,
       },
     );
-    final chatRoomData = await FirebaseFirestore.instance
-        .collection('chats')
-        .doc(widget.chat.chatId)
-        .get();
     await FirebaseFirestore.instance
         .collection('chats')
         .doc(widget.chat.chatId)
-        .set({
-      'user1': chatRoomData['user1'],
-      'user2': chatRoomData['user2'],
+        .update({
       'timestamp': timestamp,
       'lastmessage': _enteredMessage,
     });

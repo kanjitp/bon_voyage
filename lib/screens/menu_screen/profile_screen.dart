@@ -1,5 +1,9 @@
+import 'package:bon_voyage_a_new_experience/models/post.dart';
+import 'package:bon_voyage_a_new_experience/screens/post_screen/post_grid_item.dart';
 import 'package:bon_voyage_a_new_experience/widgets/myBottomNavigationBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
@@ -23,7 +27,7 @@ class ProfileScreen extends StatefulWidget {
 enum ProfileMode { map, memories, tagged }
 
 class _ProfilePageState extends State<ProfileScreen> {
-  ProfileMode currentMode;
+  ProfileMode currentMode = ProfileMode.map;
 
   @override
   Widget build(BuildContext context) {
@@ -113,66 +117,181 @@ class _ProfilePageState extends State<ProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Text(
-                      userProvider.user.name == null
-                          ? 'pending'
-                          : userProvider.user.name + '\'s Map',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    if (currentMode == ProfileMode.map)
+                      Text(
+                        userProvider.user.name == null
+                            ? 'pending'
+                            : userProvider.user.username + '\'s Map',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    if (currentMode == ProfileMode.memories)
+                      Text(
+                        userProvider.user.name == null
+                            ? 'pending'
+                            : userProvider.user.username + '\'s memories',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    if (currentMode == ProfileMode.tagged)
+                      Text(
+                        userProvider.user.name == null
+                            ? 'pending'
+                            : userProvider.user.username + '\'s tags',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     // Dummy icon button for now
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          IconButton(
-                              icon: currentMode == ProfileMode.map
-                                  ? Icon(
-                                      Icons.location_on_rounded,
-                                      color: Theme.of(context).splashColor,
-                                    )
-                                  : Icon(Icons.location_on_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  currentMode = ProfileMode.map;
-                                });
-                              }),
-                          SizedBox(
-                            width: mediaQuery.size.width * 0.02,
-                          ),
-                          IconButton(
-                              icon: currentMode == ProfileMode.memories
-                                  ? Icon(
-                                      Icons.grid_on_rounded,
-                                      color: Theme.of(context).splashColor,
-                                    )
-                                  : Icon(Icons.grid_on_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  currentMode = ProfileMode.memories;
-                                });
-                              }),
-                          SizedBox(
-                            width: mediaQuery.size.width * 0.02,
-                          ),
-                          IconButton(
-                              icon: currentMode == ProfileMode.tagged
-                                  ? Icon(
-                                      Icons.account_tree,
-                                      color: Theme.of(context).splashColor,
-                                    )
-                                  : Icon(Icons.account_tree),
-                              onPressed: () {
-                                setState(() {
-                                  currentMode = ProfileMode.tagged;
-                                });
-                              })
-                        ])
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                            icon: currentMode == ProfileMode.map
+                                ? Icon(
+                                    Icons.location_on_rounded,
+                                    color: Theme.of(context).splashColor,
+                                  )
+                                : Icon(Icons.location_on_rounded),
+                            onPressed: () {
+                              setState(() {
+                                currentMode = ProfileMode.map;
+                              });
+                            }),
+                        SizedBox(
+                          width: mediaQuery.size.width * 0.02,
+                        ),
+                        IconButton(
+                            icon: currentMode == ProfileMode.memories
+                                ? Icon(
+                                    Icons.grid_on_rounded,
+                                    color: Theme.of(context).splashColor,
+                                  )
+                                : Icon(Icons.grid_on_rounded),
+                            onPressed: () {
+                              setState(() {
+                                currentMode = ProfileMode.memories;
+                              });
+                            }),
+                        SizedBox(
+                          width: mediaQuery.size.width * 0.02,
+                        ),
+                        IconButton(
+                            icon: currentMode == ProfileMode.tagged
+                                ? Icon(
+                                    Icons.supervised_user_circle_outlined,
+                                    color: Theme.of(context).splashColor,
+                                  )
+                                : Icon(Icons.supervised_user_circle_outlined),
+                            onPressed: () {
+                              setState(() {
+                                currentMode = ProfileMode.tagged;
+                              });
+                            })
+                      ],
+                    )
                   ],
                 ),
               ],
             ),
-            Expanded(child: BonVoyageMap())
+            if (currentMode == ProfileMode.map)
+              Expanded(
+                child: BonVoyageMap(
+                  allowPost: false,
+                ),
+              ),
+            if (currentMode == ProfileMode.memories)
+              Expanded(
+                child: PostGrid(
+                  userProvider: userProvider,
+                  field: 'posts',
+                ),
+              ),
+            if (currentMode == ProfileMode.tagged)
+              Expanded(
+                  child: PostGrid(
+                userProvider: userProvider,
+                field: 'tagged_posts',
+              )),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PostGrid extends StatelessWidget {
+  final String field;
+  PostGrid({Key key, @required this.userProvider, @required this.field})
+      : super(key: key);
+
+  final CurrentUser userProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white70,
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(userProvider.user.userId)
+            .snapshots(),
+        builder: (ctx, currentUserSnapshot) {
+          if (!currentUserSnapshot.hasData) {
+            return Container();
+          } else {
+            final postIds = currentUserSnapshot.data[field];
+            return GridView.builder(
+              itemCount: postIds.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0),
+              itemBuilder: (ctx, index) {
+                final postDoc = postIds[index];
+                return StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(postDoc)
+                      .snapshots(),
+                  builder: (ctx, postSnapshot) {
+                    if (!postSnapshot.hasData) {
+                      return CircularProgressIndicator();
+                    } else {
+                      return StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(postSnapshot.data['creator'])
+                            .snapshots(),
+                        builder: (ctx, userSnapshot) {
+                          if (!userSnapshot.hasData) {
+                            return Container();
+                          } else {
+                            return PostGridItem(
+                              memory: Post(
+                                postId: postDoc,
+                                creator: User(
+                                  userId: postSnapshot.data['creator'],
+                                  username: userSnapshot.data['username'],
+                                  imageURL: userSnapshot.data['imageUrl'],
+                                  name: userSnapshot.data['name'],
+                                ),
+                                imageURL: postSnapshot.data['imageUrl'],
+                                caption: postSnapshot.data['caption'],
+                                likers: postSnapshot.data['likers'],
+                                latlng: LatLng(postSnapshot.data['lat'],
+                                    postSnapshot.data['lng']),
+                                comments: postSnapshot.data['comments'],
+                                taggedUsers: postSnapshot.data['tagged_users'],
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    }
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }

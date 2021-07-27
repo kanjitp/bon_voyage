@@ -1,3 +1,4 @@
+import 'package:bon_voyage_a_new_experience/screens/auth_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class AuthForm extends StatefulWidget {
     String password,
     String name,
     String userName,
-    bool isSignUp,
+    AuthMode mode,
     BuildContext context,
   ) submitFn;
 
@@ -23,7 +24,7 @@ class _AuthFormState extends State<AuthForm>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   AnimationController _animationController;
-  bool _isSignupMode = false;
+  AuthMode _mode = AuthMode.logIn;
   String _userEmail = '';
   String _name = '';
   String _userName = '';
@@ -46,19 +47,24 @@ class _AuthFormState extends State<AuthForm>
     _animationController.dispose();
   }
 
-  void _submitLogin() {
+  void _submitLogin() async {
     final isValid = _formKey.currentState.validate();
     // retract keyboard
     FocusScope.of(context).unfocus();
 
     if (isValid) {
       _formKey.currentState.save();
-      widget.submitFn(_userEmail.trim(), _userPassword, _name, _userName,
-          _isSignupMode, context);
-      setState(() {
-        _isSignupMode = false;
-      });
+
+      await widget.submitFn(
+          _userEmail.trim(), _userPassword, _name, _userName, _mode, context);
     }
+
+    setState(() {
+      if (_mode == AuthMode.signUp) {
+        // change mode to log in for the user for convenience
+        _mode = AuthMode.logIn;
+      }
+    });
   }
 
   @override
@@ -67,8 +73,17 @@ class _AuthFormState extends State<AuthForm>
     return AnimatedContainer(
       duration: Duration(milliseconds: 350),
       curve: Curves.easeIn,
-      height: _isSignupMode ? 400 : 300,
-      constraints: BoxConstraints(minHeight: _isSignupMode ? 400 : 300),
+      height: _mode == AuthMode.signUp
+          ? 500
+          : _mode == AuthMode.logIn
+              ? 400
+              : 300,
+      constraints: BoxConstraints(
+          minHeight: _mode == AuthMode.signUp
+              ? 500
+              : _mode == AuthMode.logIn
+                  ? 400
+                  : 300),
       width: mediaQuery.size.width,
       child: Center(
         child: Card(
@@ -107,12 +122,12 @@ class _AuthFormState extends State<AuthForm>
                       duration: Duration(milliseconds: 350),
                       curve: Curves.easeIn,
                       constraints: BoxConstraints(
-                          minHeight: _isSignupMode ? 60 : 0,
-                          maxHeight: _isSignupMode ? 100 : 0),
-                      child: _isSignupMode
+                          minHeight: _mode == AuthMode.signUp ? 60 : 0,
+                          maxHeight: _mode == AuthMode.signUp ? 100 : 0),
+                      child: _mode == AuthMode.signUp
                           ? TextFormField(
                               autocorrect: false,
-                              enabled: _isSignupMode,
+                              enabled: _mode == AuthMode.signUp,
                               key: ValueKey('name'),
                               validator: (input) {
                                 if (input.isEmpty || input.length < 4) {
@@ -134,12 +149,12 @@ class _AuthFormState extends State<AuthForm>
                       duration: Duration(milliseconds: 350),
                       curve: Curves.easeIn,
                       constraints: BoxConstraints(
-                          minHeight: _isSignupMode ? 60 : 0,
-                          maxHeight: _isSignupMode ? 100 : 0),
-                      child: _isSignupMode
+                          minHeight: _mode == AuthMode.signUp ? 60 : 0,
+                          maxHeight: _mode == AuthMode.signUp ? 100 : 0),
+                      child: _mode == AuthMode.signUp
                           ? TextFormField(
                               autocorrect: false,
-                              enabled: _isSignupMode,
+                              enabled: _mode == AuthMode.signUp,
                               key: ValueKey('username'),
                               validator: (input) {
                                 if (input.isEmpty || input.length < 4) {
@@ -157,48 +172,73 @@ class _AuthFormState extends State<AuthForm>
                             )
                           : null,
                     ),
-                    TextFormField(
-                      autocorrect: false,
-                      key: ValueKey('password'),
-                      validator: (input) {
-                        if (input.isEmpty || input.length < 7) {
-                          return 'Password must be at least 8 characters long';
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: "at least 8 characters long"),
-                      onSaved: (value) {
-                        _userPassword = value;
-                      },
-                      obscureText: true,
-                      obscuringCharacter: '※',
-                    ),
+                    if (_mode != AuthMode.forgotPassword)
+                      TextFormField(
+                        autocorrect: false,
+                        key: ValueKey('password'),
+                        validator: (input) {
+                          if (input.isEmpty || input.length < 7) {
+                            return 'Password must be at least 8 characters long';
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            hintText: "at least 8 characters long"),
+                        onSaved: (value) {
+                          _userPassword = value;
+                        },
+                        obscureText: true,
+                        obscuringCharacter: '※',
+                      ),
                     SizedBox(
                       height: 12,
                     ),
                     if (widget.isLoading) CircularProgressIndicator(),
                     if (!widget.isLoading)
                       RaisedButton(
-                        child: Text(_isSignupMode ? 'Sign up' : 'Login'),
+                        child: Text(_mode == AuthMode.signUp
+                            ? 'Sign up'
+                            : _mode == AuthMode.logIn
+                                ? 'Login'
+                                : 'Send password reset link'),
                         onPressed: () async {
                           _submitLogin();
                         },
                       ),
                     if (!widget.isLoading)
                       FlatButton(
-                        child: Text(_isSignupMode
+                        child: Text(_mode == AuthMode.signUp
                             ? 'I already have an account'
-                            : 'Create new account'),
+                            : _mode == AuthMode.logIn
+                                ? 'Create new account'
+                                : 'Cancel'),
                         onPressed: () {
                           setState(() {
-                            _isSignupMode = !_isSignupMode;
+                            if (_mode == AuthMode.logIn) {
+                              _mode = AuthMode.signUp;
+                            } else {
+                              _mode = AuthMode.logIn;
+                            }
                           });
                         },
                         textColor: Theme.of(context).splashColor,
                       ),
+                    if (_mode != AuthMode.forgotPassword)
+                      FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            _mode = AuthMode.forgotPassword;
+                          });
+                        },
+                        child: Text(
+                          'Fogotten password?',
+                          style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontWeight: FontWeight.w300),
+                        ),
+                      )
                   ],
                 ),
               ),
