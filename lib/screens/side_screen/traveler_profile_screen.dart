@@ -1,12 +1,17 @@
-import 'package:bon_voyage_a_new_experience/models/chat.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen/chat/chat_screen.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen/profile_screen.dart';
-import 'package:bon_voyage_a_new_experience/widgets/bonVoyageMap.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import './post_grid.dart';
+
+import '../menu_screen/profile_screen.dart';
+
+import '../../widgets/bonVoyageMap.dart';
+
+import '../../../models/chat.dart';
+import '../../../models/user.dart';
+import '../../../providers/current_user.dart';
+import '../../../screens/menu_screen/chat/chat_screen.dart';
 
 class TravelerProfileScreen extends StatefulWidget {
   final User user;
@@ -19,6 +24,8 @@ class TravelerProfileScreen extends StatefulWidget {
   @override
   _TravelerProfileScreenState createState() => _TravelerProfileScreenState();
 }
+
+enum ProfileMode { map, memories, tagged }
 
 class _TravelerProfileScreenState extends State<TravelerProfileScreen> {
   bool initiallyFollowed;
@@ -561,8 +568,18 @@ class _TravelerProfileBodyState extends State<TravelerProfileBody> {
                 ),
               ),
             if (currentMode == ProfileMode.memories)
-              Expanded(child: Container()),
-            if (currentMode == ProfileMode.tagged) Expanded(child: Container()),
+              Expanded(
+                child: PostGrid(
+                  user: widget.user,
+                  field: 'posts',
+                ),
+              ),
+            if (currentMode == ProfileMode.tagged)
+              Expanded(
+                  child: PostGrid(
+                user: widget.user,
+                field: 'tagged_posts',
+              )),
           ],
         ),
       ),

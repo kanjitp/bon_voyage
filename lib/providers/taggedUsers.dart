@@ -1,7 +1,6 @@
-import 'dart:collection';
-
-import 'package:bon_voyage_a_new_experience/models/user.dart';
 import 'package:flutter/foundation.dart';
+
+import '../models/user.dart';
 
 class TaggedUsers with ChangeNotifier {
   String id;

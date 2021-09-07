@@ -1,19 +1,24 @@
-import 'package:bon_voyage_a_new_experience/logics/custom_rect_tween.dart';
-import 'package:bon_voyage_a_new_experience/logics/hero_dialog_route.dart';
-import 'package:bon_voyage_a_new_experience/models/chat.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/side_screen/traveler_profile_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/chat/new_message.dart';
 
 import '../../../widgets/chat/messages.dart';
-import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../../../logics/custom_rect_tween.dart';
+import '../../../../../logics/hero_dialog_route.dart';
+
+import '../../../../../models/chat.dart';
+import '../../../../../models/user.dart';
+
+import '../../../../../providers/current_user.dart';
+
+import '../../side_screen/traveler_profile_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final Chat chat;

@@ -1,13 +1,17 @@
-import 'package:bon_voyage_a_new_experience/widgets/fill_outline_button.dart';
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/posts.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../widgets/fill_outline_button.dart';
+
+import '../../../../models/post.dart';
+import '../../../../models/user.dart';
+
+import '../../../../providers/current_user.dart';
+import '../../../../providers/posts.dart';
+
+import '../post_screen/post_card.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key key}) : super(key: key);

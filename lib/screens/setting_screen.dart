@@ -1,13 +1,13 @@
-import 'package:bon_voyage_a_new_experience/logics/hero_dialog_route.dart';
-import 'package:bon_voyage_a_new_experience/models/user_presence.dart';
-import 'package:bon_voyage_a_new_experience/providers/settings.dart';
-import 'package:bon_voyage_a_new_experience/screens/setting/logout_popup_card.dart';
-import 'package:bon_voyage_a_new_experience/screens/setting/security_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/auth_screen.dart';
+import '../../logics/hero_dialog_route.dart';
+
+import '../../providers/settings.dart';
+
+import '../../screens/setting/logout_popup_card.dart';
+import '../../screens/setting/security_screen.dart';
+
 import './main_screen.dart';
 
 class SettingScreen extends StatefulWidget {

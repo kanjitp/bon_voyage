@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:bon_voyage_a_new_experience/providers/chats.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +10,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/edit_profile/user_image_picker.dart';
-import '../profile_screen.dart';
 import '../../../providers/current_user.dart';
+
+import '../../menu_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static final routeName = '/edit-profile';

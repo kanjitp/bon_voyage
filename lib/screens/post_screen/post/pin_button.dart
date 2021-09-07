@@ -1,12 +1,12 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/current_user.dart';
+
 class PinButton extends StatefulWidget {
-  final Post memory;
-  PinButton({this.memory, Key key}) : super(key: key);
+  final String postId;
+  PinButton({this.postId, Key key}) : super(key: key);
 
   @override
   _PinButtonState createState() => _PinButtonState();
@@ -21,16 +21,15 @@ class _PinButtonState extends State<PinButton> {
         .collection('users')
         .doc(currentUser.userId)
         .get();
-    bool isPinned = userData['pinned_posts'].contains(widget.memory.postId);
+    bool isPinned = userData['pinned_posts'].contains(widget.postId);
     if (isPinned) {
-      final newPinnedPost = userData['pinned_posts']
-        ..remove(widget.memory.postId);
+      final newPinnedPost = userData['pinned_posts']..remove(widget.postId);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(currentUser.userId)
           .update({'pinned_posts': newPinnedPost});
     } else {
-      final newPinnedPost = userData['pinned_posts']..add(widget.memory.postId);
+      final newPinnedPost = userData['pinned_posts']..add(widget.postId);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(currentUser.userId)
@@ -50,8 +49,7 @@ class _PinButtonState extends State<PinButton> {
         if (!userSnapshot.hasData) {
           return Container();
         } else {
-          _isPinned =
-              userSnapshot.data['pinned_posts'].contains(widget.memory.postId);
+          _isPinned = userSnapshot.data['pinned_posts'].contains(widget.postId);
           return IconButton(
             onPressed: () async {
               await _togglePin();

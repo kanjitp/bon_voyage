@@ -1,20 +1,18 @@
-import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:bon_voyage_a_new_experience/models/user.dart' as user;
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/file_provider.dart';
-import 'package:bon_voyage_a_new_experience/providers/markers_notifier.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/screens/main_screen.dart';
+import '../../../models/user.dart' as user;
+import '../../../providers/current_user.dart';
+import '../../../providers/file_provider.dart';
+import '../../../providers/taggedUsers.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:provider/provider.dart';
 
 import './post_image_picker.dart';

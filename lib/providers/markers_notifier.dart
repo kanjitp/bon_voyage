@@ -1,15 +1,15 @@
-import 'dart:async';
-import 'dart:collection';
-
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../models/post.dart';
+import '../models/user.dart';
+
+import '../providers/current_user.dart';
+
+import '../screens/post_screen/post_screen.dart';
 
 class MarkersNotifier with ChangeNotifier {
   List<Marker> _markers = [];

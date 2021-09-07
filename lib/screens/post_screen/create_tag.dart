@@ -1,9 +1,10 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/create_post_screen.dart';
-import './edit_tag/edit_tag_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import './edit_tag/edit_tag_screen.dart';
+
+import '../../../providers/taggedUsers.dart';
+import './create_post_screen.dart';
 
 class CreateTag extends StatefulWidget {
   @override

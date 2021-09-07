@@ -1,12 +1,14 @@
 import 'dart:math';
 
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/create_post_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../models/user.dart';
+import '../../../../providers/taggedUsers.dart';
+
+import '../../create_post_screen.dart';
 
 class SearchTag extends StatefulWidget {
   Function update;

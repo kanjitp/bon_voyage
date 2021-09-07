@@ -1,10 +1,8 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/models/user_presence.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+import '../models/user.dart';
 
 class Users with ChangeNotifier {
   bool _onlyFriends;

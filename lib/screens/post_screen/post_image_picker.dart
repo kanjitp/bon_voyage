@@ -1,18 +1,16 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/file_provider.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/create_post_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+
+import 'create_post_screen.dart';
+
+import '../../../providers/file_provider.dart';
 
 class PostImagePicker extends StatefulWidget {
   @override

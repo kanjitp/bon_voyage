@@ -1,11 +1,12 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/create_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './tag/tagged_list.dart';
 import './tag/search_tag.dart';
+
+import '../create_post_screen.dart';
+
+import '../../../providers/taggedUsers.dart';
 
 class EditTagScreen extends StatefulWidget {
   Function createPostUpdate;

@@ -1,9 +1,6 @@
-import 'package:bon_voyage_a_new_experience/models/user_presence.dart';
-import 'package:bon_voyage_a_new_experience/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../widgets/auth/auth_form.dart';
 

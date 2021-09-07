@@ -1,10 +1,12 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:provider/provider.dart';
+
+import '../../../models/post.dart';
+
+import '../../../providers/current_user.dart';
+
+import 'post_screen.dart';
 
 class PostGridItem extends StatelessWidget {
   final Post memory;
@@ -49,10 +51,12 @@ class PostGridItem extends StatelessWidget {
               ),
             );
           },
-          child: Image.network(
-            memory.imageURL,
-            fit: BoxFit.cover,
-          ),
+          child: memory.imageURL == null
+              ? Image.asset('./assets/images/post_placeholder.png')
+              : Image.network(
+                  memory.imageURL,
+                  fit: BoxFit.cover,
+                ),
         ),
       ),
     );

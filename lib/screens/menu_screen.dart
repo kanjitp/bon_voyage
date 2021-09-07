@@ -1,14 +1,15 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'main_screen.dart';
 
-import '../providers/chats.dart';
 import '../providers/current_user.dart';
+
+import '../../models/user.dart';
+import '../../screens/setting_screen.dart';
+
 import './menu_screen/chatroom_screen.dart';
 import './menu_screen/feed_screen.dart';
-import 'menu_screen/travelers_screen.dart';
+import './menu_screen/travelers_screen.dart';
 import './menu_screen/pin_screen.dart';
 import './menu_screen/profile_screen.dart';
 

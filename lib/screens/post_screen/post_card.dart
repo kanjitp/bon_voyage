@@ -1,19 +1,20 @@
-import 'package:bon_voyage_a_new_experience/logics/custom_rect_tween.dart';
-import 'package:bon_voyage_a_new_experience/logics/hero_dialog_route.dart';
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/commentlist.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/navigateToMapButton.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/newcomment.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/pin_button.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/poststat.dart';
-import 'package:bon_voyage_a_new_experience/screens/side_screen/traveler_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../main_screen.dart';
+import '../../../logics/custom_rect_tween.dart';
+import '../../../logics/hero_dialog_route.dart';
+import '../../../models/post.dart';
+import '../../../models/user.dart';
+import '../../../providers/current_user.dart';
+
+import '../side_screen/traveler_profile_screen.dart';
+
+import './post/commentlist.dart';
+import './post/navigateToMapButton.dart';
+import './post/newcomment.dart';
+import './post/pin_button.dart';
+import './post/poststat.dart';
 
 class PostCard extends StatefulWidget {
   final Post memory;
@@ -255,9 +256,7 @@ class _PostCardState extends State<PostCard> {
                     NavigateToMapButton(
                       memory: widget.memory,
                     ),
-                    PinButton(
-                      memory: widget.memory,
-                    ),
+                    PinButton(postId: widget.memory.postId),
                     PopupMenuButton(
                       onSelected: (selectedValue) async {
                         print(selectedValue);
@@ -324,11 +323,12 @@ class _PostCardState extends State<PostCard> {
                     fit: BoxFit.contain,
                   ),
           ),
-          PostStat(widget.memory, _like, _startAddNewComment),
+          PostStat(widget.memory.postId, _like, _startAddNewComment),
           Container(
             color: Theme.of(context).primaryColor,
             height: mediaQuery.size.height * 0.2,
-            child: CommentList(widget.memory, _deleteComment),
+            child: CommentList(
+                widget.memory.postId, widget.memory.creator, _deleteComment),
           )
         ],
       ),

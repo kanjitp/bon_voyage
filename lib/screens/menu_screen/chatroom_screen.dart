@@ -1,19 +1,21 @@
-import 'package:bon_voyage_a_new_experience/logics/custom_rect_tween.dart';
-import 'package:bon_voyage_a_new_experience/logics/hero_dialog_route.dart';
-import 'package:bon_voyage_a_new_experience/models/chat.dart';
-import 'package:bon_voyage_a_new_experience/widgets/fill_outline_button.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/chats.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/users.dart';
-import 'package:bon_voyage_a_new_experience/screens/add_chat_screen.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen/chat/chat_screen.dart';
-import 'package:bon_voyage_a_new_experience/screens/main_screen.dart';
-import 'package:bon_voyage_a_new_experience/widgets/myBottomNavigationBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../../logics/custom_rect_tween.dart';
+import '../../.../../logics/hero_dialog_route.dart';
+
+import '../../../../models/chat.dart';
+
+import '../../../../widgets/fill_outline_button.dart';
+
+import '../../../../models/user.dart';
+
+import '../../../../providers/chats.dart';
+import '../../../../providers/current_user.dart';
+
+import './chat/chat_screen.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   @override

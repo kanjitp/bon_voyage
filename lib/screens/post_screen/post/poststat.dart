@@ -1,16 +1,15 @@
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/post.dart';
+import '../../../providers/current_user.dart';
 
 class PostStat extends StatefulWidget {
-  final Post memory;
+  final String postId;
   final Function like;
   final Function startAddComment;
 
-  PostStat(this.memory, this.like, this.startAddComment);
+  PostStat(this.postId, this.like, this.startAddComment);
 
   @override
   _PostStatState createState() => _PostStatState();
@@ -30,7 +29,7 @@ class _PostStatState extends State<PostStat> {
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('posts')
-                  .doc(widget.memory.postId)
+                  .doc(widget.postId)
                   .snapshots(),
               builder: (ctx, postSnapshot) {
                 if (!postSnapshot.hasData) {
@@ -53,15 +52,25 @@ class _PostStatState extends State<PostStat> {
                       ]);
                 }
               }),
-          Column(
-            //Comment
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.comment_outlined),
-                  onPressed: () => widget.startAddComment(context)),
-              Text(widget.memory.comments.length.toString()),
-            ],
-          ),
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .doc(widget.postId)
+                  .snapshots(),
+              builder: (ctx, postSnapshot) {
+                if (!postSnapshot.hasData) {
+                  return CircularProgressIndicator();
+                } else {
+                  return Column(
+                      //Like
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.comment_outlined),
+                            onPressed: () => widget.startAddComment(context)),
+                        Text(postSnapshot.data['comments'].length.toString())
+                      ]);
+                }
+              }),
           Column(
             //Share
             children: <Widget>[

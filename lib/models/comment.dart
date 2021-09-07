@@ -1,5 +1,6 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../models/user.dart';
 
 class Comment {
   String commendId;

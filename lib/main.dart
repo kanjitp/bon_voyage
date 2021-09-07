@@ -1,33 +1,31 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:bon_voyage_a_new_experience/providers/chats.dart';
-import 'package:bon_voyage_a_new_experience/providers/file_provider.dart';
-import 'package:bon_voyage_a_new_experience/providers/markers_notifier.dart';
-import 'package:bon_voyage_a_new_experience/providers/posts.dart';
-import 'package:bon_voyage_a_new_experience/providers/settings.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/providers/users.dart';
-import 'package:bon_voyage_a_new_experience/screens/add_chat_screen.dart';
-import 'package:bon_voyage_a_new_experience/screens/setting_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'screens/menu_screen/chat/chat_screen.dart';
-import './screens/main_screen.dart';
-import 'screens/menu_screen/pin_screen.dart';
-import 'screens/menu_screen/profile_screen.dart';
-import './screens/splash_screen.dart';
-import './screens/error_screen.dart';
-import 'screens/menu_screen/profile/edit_profile_screen.dart';
-import './screens/auth_screen.dart';
+import './providers/chats.dart';
+import './providers/file_provider.dart';
+import './providers/markers_notifier.dart';
+import './providers/posts.dart';
+import './providers/settings.dart';
+import './providers/taggedUsers.dart';
+import './providers/users.dart';
 import './providers/mapController.dart';
 import './providers/tilt_level.dart';
 import './providers/user_location.dart';
-import 'providers/current_user.dart';
+import './providers/current_user.dart';
+
+import './screens/setting_screen.dart';
+
+import './screens/main_screen.dart';
+import './screens/menu_screen/pin_screen.dart';
+import './screens/menu_screen/profile_screen.dart';
+import './screens/splash_screen.dart';
+import './screens/menu_screen/profile/edit_profile_screen.dart';
+import './screens/auth_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

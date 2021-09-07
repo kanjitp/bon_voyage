@@ -2,26 +2,27 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:bon_voyage_a_new_experience/logics/hero_dialog_route.dart';
-import 'package:bon_voyage_a_new_experience/main.dart';
-import 'package:bon_voyage_a_new_experience/providers/markers_notifier.dart';
-import 'package:bon_voyage_a_new_experience/providers/settings.dart';
-import 'package:bon_voyage_a_new_experience/widgets/googlemap/post_popup_card.dart';
 import 'package:control_pad/control_pad.dart';
-import 'package:control_pad/models/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 
+import '../providers/markers_notifier.dart';
+import '../providers/settings.dart';
 import '../providers/mapController.dart';
 import '../providers/user_location.dart';
 import '../providers/tilt_level.dart';
+
 import './googlemap/currentUserLocBtn.dart';
 import './googlemap/tiltBtn.dart';
 import './googlemap/maneuverBtn.dart';
+
+import '../logics/hero_dialog_route.dart';
+
+import '../widgets/googlemap/post_popup_card.dart';
 
 class BonVoyageMap extends StatefulWidget {
   final bool allowPost;

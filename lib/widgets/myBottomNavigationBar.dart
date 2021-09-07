@@ -1,4 +1,4 @@
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
+import '../providers/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

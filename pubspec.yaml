@@ -72,6 +72,7 @@ flutter:
     - assets/images/user_pin.png
     - assets/images/dummy_user.png
     - assets/images/logo.jpg
+    - assets/images/post_placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

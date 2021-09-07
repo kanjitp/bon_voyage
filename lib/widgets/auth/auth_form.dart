@@ -1,6 +1,6 @@
-import 'package:bon_voyage_a_new_experience/screens/auth_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../screens/auth_screen.dart';
 
 class AuthForm extends StatefulWidget {
   final void Function(

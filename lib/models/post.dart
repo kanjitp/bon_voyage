@@ -1,8 +1,6 @@
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'comment.dart';
+import '../models/user.dart';
 
 class Post {
   String postId;

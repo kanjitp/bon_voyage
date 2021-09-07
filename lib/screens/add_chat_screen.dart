@@ -1,13 +1,15 @@
-import 'package:bon_voyage_a_new_experience/models/chat.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/chats.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/users.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen/chat/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/chat.dart';
+import '../../models/user.dart';
+
+import '../../providers/current_user.dart';
+import '../../providers/users.dart';
+
+import './menu_screen/chat/chat_screen.dart';
 
 class AddChatScreen extends StatefulWidget {
   static final routeName = '/add-chat';

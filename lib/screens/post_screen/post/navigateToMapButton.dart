@@ -1,5 +1,6 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
 import 'package:flutter/material.dart';
+
+import '../../../models/post.dart';
 
 import '../../main_screen.dart';
 

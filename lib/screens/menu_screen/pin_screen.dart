@@ -1,12 +1,13 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_grid_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import '../main_screen.dart';
+
+import '../../../../models/post.dart';
+import '../../../../models/user.dart';
+import '../../../../providers/current_user.dart';
+
+import '../post_screen/post_grid_item.dart';
 
 class PinScreen extends StatelessWidget {
   static final routeName = '/pin';

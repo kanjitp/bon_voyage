@@ -1,10 +1,9 @@
-import 'package:bon_voyage_a_new_experience/providers/chats.dart';
-import 'package:bon_voyage_a_new_experience/screens/menu_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+
+import '../../screens/menu_screen.dart';
 
 import './setting_screen.dart';
 import '../widgets/bonVoyageMap.dart';

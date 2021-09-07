@@ -1,14 +1,13 @@
 import 'dart:math';
 
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/side_screen/traveler_profile_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
-import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../../../models/user.dart';
+import '../../../../providers/current_user.dart';
+import '../side_screen/traveler_profile_screen.dart';
 
 class TravelersScreen extends StatefulWidget {
   TravelersScreen({Key key}) : super(key: key);

@@ -1,18 +1,16 @@
-import 'package:bon_voyage_a_new_experience/models/comment.dart';
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/navigateToMapButton.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post/pin_button.dart';
-import 'package:bon_voyage_a_new_experience/screens/side_screen/traveler_profile_screen.dart';
-import 'package:provider/provider.dart';
-import 'post/commentlist.dart';
-import 'post/newcomment.dart';
-import 'post/poststat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../main_screen.dart';
+import './post/navigateToMapButton.dart';
+import './post/pin_button.dart';
+import './post/commentlist.dart';
+import './post/newcomment.dart';
+import './post/poststat.dart';
+
+import '../side_screen/traveler_profile_screen.dart';
+
+import '../../../models/post.dart';
+import './../../models/user.dart';
 
 class PostScreen extends StatefulWidget {
   final User viewer;
@@ -226,15 +224,13 @@ class _PostScreenState extends State<PostScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PostStat(widget.memory, _like, _startAddNewComment),
+                PostStat(widget.memory.postId, _like, _startAddNewComment),
                 Row(
                   children: [
                     NavigateToMapButton(
                       memory: widget.memory,
                     ),
-                    PinButton(
-                      memory: widget.memory,
-                    ),
+                    PinButton(postId: widget.memory.postId),
                   ],
                 )
               ],
@@ -265,7 +261,8 @@ class _PostScreenState extends State<PostScreen> {
                 padding: EdgeInsets.symmetric(
                     vertical: mediaQuery.size.height * 0.02),
                 height: mediaQuery.size.height * 0.25,
-                child: CommentList(widget.memory, _deleteComment)),
+                child: CommentList(widget.memory.postId, widget.memory.creator,
+                    _deleteComment)),
           ],
         ),
       ),

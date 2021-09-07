@@ -1,19 +1,16 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_grid_item.dart';
-import 'package:bon_voyage_a_new_experience/widgets/myBottomNavigationBar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
-import '../../widgets/profilepage/headbar.dart';
 import '../../widgets/profilepage/profilepic.dart';
 import '../../widgets/profilepage/username.dart';
 import '../../widgets/profilepage/userstat.dart';
-import '../../providers/current_user.dart';
-import 'profile/edit_profile_screen.dart';
 import '../../widgets/BonVoyageMap.dart';
+
+import '../../providers/current_user.dart';
+import '../side_screen/post_grid.dart';
+
+import './profile/edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -199,99 +196,18 @@ class _ProfilePageState extends State<ProfileScreen> {
             if (currentMode == ProfileMode.memories)
               Expanded(
                 child: PostGrid(
-                  userProvider: userProvider,
+                  user: userProvider.user,
                   field: 'posts',
                 ),
               ),
             if (currentMode == ProfileMode.tagged)
               Expanded(
                   child: PostGrid(
-                userProvider: userProvider,
+                user: userProvider.user,
                 field: 'tagged_posts',
               )),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PostGrid extends StatelessWidget {
-  final String field;
-  PostGrid({Key key, @required this.userProvider, @required this.field})
-      : super(key: key);
-
-  final CurrentUser userProvider;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white70,
-      child: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(userProvider.user.userId)
-            .snapshots(),
-        builder: (ctx, currentUserSnapshot) {
-          if (!currentUserSnapshot.hasData) {
-            return Container();
-          } else {
-            final postIds = currentUserSnapshot.data[field];
-            return GridView.builder(
-              itemCount: postIds.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 0,
-                  mainAxisSpacing: 0),
-              itemBuilder: (ctx, index) {
-                final postDoc = postIds[index];
-                return StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(postDoc)
-                      .snapshots(),
-                  builder: (ctx, postSnapshot) {
-                    if (!postSnapshot.hasData) {
-                      return CircularProgressIndicator();
-                    } else {
-                      return StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(postSnapshot.data['creator'])
-                            .snapshots(),
-                        builder: (ctx, userSnapshot) {
-                          if (!userSnapshot.hasData) {
-                            return Container();
-                          } else {
-                            return PostGridItem(
-                              memory: Post(
-                                postId: postDoc,
-                                creator: User(
-                                  userId: postSnapshot.data['creator'],
-                                  username: userSnapshot.data['username'],
-                                  imageURL: userSnapshot.data['imageUrl'],
-                                  name: userSnapshot.data['name'],
-                                ),
-                                imageURL: postSnapshot.data['imageUrl'],
-                                caption: postSnapshot.data['caption'],
-                                likers: postSnapshot.data['likers'],
-                                latlng: LatLng(postSnapshot.data['lat'],
-                                    postSnapshot.data['lng']),
-                                comments: postSnapshot.data['comments'],
-                                taggedUsers: postSnapshot.data['tagged_users'],
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    }
-                  },
-                );
-              },
-            );
-          }
-        },
       ),
     );
   }

@@ -1,12 +1,11 @@
-import 'dart:async';
-
-import 'package:bon_voyage_a_new_experience/models/chat.dart';
-import 'package:bon_voyage_a_new_experience/widgets/chat/update_bubble.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import './message_bubble.dart';
+
+import '../../models/chat.dart';
+import '../../widgets/chat/update_bubble.dart';
 
 class Messages extends StatefulWidget {
   final Chat chat;

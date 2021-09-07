@@ -1,17 +1,17 @@
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/comment.dart';
+import '../../../models/user.dart';
+import '../../../providers/current_user.dart';
 
 class CommentList extends StatefulWidget {
-  final Post post;
+  final String postId;
+  final User creator;
   final Function deleteComment;
 
-  CommentList(this.post, this.deleteComment);
+  CommentList(this.postId, this.creator, this.deleteComment);
 
   @override
   _CommentListState createState() => _CommentListState();
@@ -47,14 +47,14 @@ class _CommentListState extends State<CommentList> {
   void like(User currentUser, String commentId) async {
     final commentData = await FirebaseFirestore.instance
         .collection('posts')
-        .doc(widget.post.postId)
+        .doc(widget.postId)
         .collection('comments')
         .doc(commentId)
         .get();
 
     await FirebaseFirestore.instance
         .collection('posts')
-        .doc(widget.post.postId)
+        .doc(widget.postId)
         .collection('comments')
         .doc(commentId)
         .update({
@@ -69,10 +69,11 @@ class _CommentListState extends State<CommentList> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final currentUser = Provider.of<CurrentUser>(context, listen: false).user;
+
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('posts')
-            .doc(widget.post.postId)
+            .doc(widget.postId)
             .collection('comments')
             .orderBy('timestamp')
             .snapshots(),
@@ -182,7 +183,7 @@ class _CommentListState extends State<CommentList> {
                                   if (currentUser.userId ==
                                           comment.user.userId ||
                                       currentUser.userId ==
-                                          widget.post.creator.userId) {
+                                          widget.creator.userId) {
                                     _deleteCommentDialog(
                                         context, comment.commendId);
                                   }

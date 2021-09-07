@@ -1,10 +1,11 @@
-import 'package:bon_voyage_a_new_experience/logics/custom_rect_tween.dart';
-import 'package:bon_voyage_a_new_experience/models/user_presence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../auth_screen.dart';
 import '../main_screen.dart';
+
+import '../../../logics/custom_rect_tween.dart';
+import '../../../models/user_presence.dart';
 
 class LogoutPopupCard extends StatelessWidget {
   static const String _logoutPopup = 'log-out';

@@ -1,16 +1,15 @@
 import 'dart:typed_data';
 
-import 'package:bon_voyage_a_new_experience/logics/custom_rect_tween.dart';
-import 'package:bon_voyage_a_new_experience/models/post.dart';
-import 'package:bon_voyage_a_new_experience/models/user.dart';
-import 'package:bon_voyage_a_new_experience/providers/current_user.dart';
-import 'package:bon_voyage_a_new_experience/providers/file_provider.dart';
-import 'package:bon_voyage_a_new_experience/providers/taggedUsers.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/post_screen.dart';
-import 'package:bon_voyage_a_new_experience/screens/post_screen/create_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/file_provider.dart';
+import '../../providers/taggedUsers.dart';
+
+import '../../logics/custom_rect_tween.dart';
+
+import '../../screens/post_screen/create_post_screen.dart';
 
 // ignore: camel_case_types
 class PostPopupCard extends StatelessWidget {
